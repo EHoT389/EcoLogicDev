@@ -22,8 +22,8 @@ def zone_changes(zone_id:str,request:Request,threshold:float=Query(.3,ge=.1,le=.
  return service.get_vegetation_change(zone_id,threshold=threshold,language=language(request))
 
 @router.get('/tiles/{year}/{z}/{x}/{y}')
-def tiles(year:str,z:int,x:int,y:int,threshold:float=Query(.3,ge=.1,le=.9)):
- data=service.tile_png(year,z,x,y,threshold)
+def tiles(year:str,z:int,x:int,y:int,threshold:float=Query(.3,ge=.1,le=.9),layer:str=Query('vegetation',pattern='^(vegetation|ndvi|quality)$')):
+ data=service.tile_png(year,z,x,y,threshold,layer)
  return Response(data,media_type='image/png',headers={'Cache-Control':'public, max-age=300','X-Content-Type-Options':'nosniff'})
 
 @router.get('/export')

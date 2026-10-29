@@ -42,9 +42,11 @@ def get_vegetation_change(arguments: VegetationChangeArguments, selected_zone: d
             ],
         } for year in (2020, 2026)
     }
+    scope = result.get('scope')
+    coverage_desc = 'The processed area covers the administrative territory of Pavlodar (relation 5501700, 630.38 km²).' if scope == 'administrative_city' else 'The processed area is a central Pavlodar pilot, not the whole city.'
     compact['interpretation_rules'] = [
         'Use only statistics returned here; status other than ready means no verified numerical comparison.',
-        'The processed area is a central Pavlodar pilot, not the whole city. Means and areas use common valid pixels.',
+        coverage_desc + ' Means and areas use common valid pixels.',
         'NDVI measures probable vegetation including grass and shrubs, not a count of trees.',
         'Possible causes are hypotheses. Neither planting, felling, neglect nor ownership can be proved from NDVI.',
         'Do not change an OSM zone status or claim planting permission. Recommend field inspection before work.',

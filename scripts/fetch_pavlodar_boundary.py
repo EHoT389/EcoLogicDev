@@ -103,6 +103,7 @@ def main():
     args = parser.parse_args()
     args.cache_dir.mkdir(parents=True, exist_ok=True)
     place_path, relation_path = args.cache_dir / 'nominatim.json', args.cache_dir / 'relation.json'
+    retrieval_path = args.cache_dir / 'retrieval.json'
     if args.refresh or not (place_path.exists() and relation_path.exists()):
         with httpx.Client(timeout=50, headers={'User-Agent': UA, 'Accept-Language': 'ru,kk,en'}) as client:
             response = client.get(LOOKUP, params={'osm_ids': f'R{RELATION_ID}', 'format': 'jsonv2',
@@ -117,9 +118,12 @@ def main():
             relation = next(v for v in relations if v.get('type') == 'relation' and v.get('id') == RELATION_ID)
         place_path.write_text(json.dumps(places, ensure_ascii=False, indent=2), encoding='utf-8')
         relation_path.write_text(json.dumps(relation, ensure_ascii=False, indent=2), encoding='utf-8')
+        retrieval_path.write_text(json.dumps({'retrieved_at': datetime.now(timezone.utc).isoformat()}), encoding='utf-8')
     places = json.loads(place_path.read_text(encoding='utf-8'))
     relation = json.loads(relation_path.read_text(encoding='utf-8'))
-    feature, metadata = prepare_boundary(places[0], relation)
+    retrieved_at = (json.loads(retrieval_path.read_text(encoding='utf-8'))['retrieved_at'] if retrieval_path.exists()
+                    else datetime.fromtimestamp(max(place_path.stat().st_mtime, relation_path.stat().st_mtime), timezone.utc).isoformat())
+    feature, metadata = prepare_boundary(places[0], relation, retrieved_at)
     zones_path = ROOT / 'backend' / 'assets' / 'pavlodar-zones.json'
     if zones_path.exists():
         boundary = shape(feature['geometry'])

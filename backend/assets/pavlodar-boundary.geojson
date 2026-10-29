@@ -25,7 +25,7 @@
       "version": 28,
       "object_timestamp": "2026-07-19T09:28:44Z",
       "geometry_service": "https://nominatim.openstreetmap.org/lookup",
-      "retrieved_at": "2026-10-29T07:48:28.657718+00:00"
+      "retrieved_at": "2026-10-29T07:48:27.802313+00:00"
     },
     "coordinate_reference_system": "EPSG:4326",
     "coordinate_order": "longitude,latitude",

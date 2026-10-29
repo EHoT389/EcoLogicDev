@@ -1,0 +1,72 @@
+{
+  "id": "osm-relation-5501700",
+  "scope": "administrative_city",
+  "name_ru": "Павлодар Г.А.",
+  "name_kk": "Павлодар Қ.Ә.",
+  "display_name_ru": "Павлодар — территория городской администрации",
+  "display_name_kk": "Павлодар — қалалық әкімдік аумағы",
+  "boundary": "administrative",
+  "admin_level": 6,
+  "source": {
+    "provider": "OpenStreetMap contributors",
+    "osm_type": "relation",
+    "osm_id": 5501700,
+    "url": "https://www.openstreetmap.org/relation/5501700",
+    "api_url": "https://api.openstreetmap.org/api/0.6/relation/5501700.json",
+    "version": 28,
+    "object_timestamp": "2026-07-19T09:28:44Z",
+    "geometry_service": "https://nominatim.openstreetmap.org/lookup",
+    "retrieved_at": "2026-10-29T07:48:28.657718+00:00"
+  },
+  "coordinate_reference_system": "EPSG:4326",
+  "coordinate_order": "longitude,latitude",
+  "area_crs": "EPSG:32643",
+  "area_km2_geodesic": 630.5952154729371,
+  "area_km2_projected": 630.3769929765429,
+  "bbox_wgs84": [
+    76.6136921,
+    52.1142206,
+    77.2217814,
+    52.4788863
+  ],
+  "geometry_type": "MultiPolygon",
+  "components": 4,
+  "valid": true,
+  "validation": "Valid Geometry",
+  "geometry_sha256": "4276a49827b32577b23d62b09dbd0c1dcb27713fc98f883f1fdec4ed86288bc3",
+  "license": {
+    "name": "ODbL 1.0",
+    "url": "https://www.openstreetmap.org/copyright",
+    "attribution": "© OpenStreetMap contributors"
+  },
+  "selection_reason_ru": "Выбрана административная relation городской администрации. Граница включает город и подчинённые территории; она не равна только застроенной части.",
+  "selection_reason_kk": "Қалалық әкімдіктің әкімшілік relation шекарасы таңдалды. Ол қала мен бағынысты аумақтарды қамтиды; тек салынған бөліктің шекарасы емес.",
+  "rejected_alternatives": [
+    {
+      "osm_type": "relation",
+      "osm_id": 215772,
+      "reason": "Pavlodar Region/province, not the city administration"
+    },
+    {
+      "osm_type": "way",
+      "osm_id": 170089891,
+      "reason": "place=city settlement polygon, not an administrative boundary"
+    }
+  ],
+  "limitations_ru": "Открытая картографическая граница OSM, не кадастровое или юридическое удостоверение. Незастроенные части и отдельные компоненты также входят в AOI.",
+  "limitations_kk": "OSM ашық картографиялық шекарасы; кадастрлық немесе заңдық куәлік емес. Салынбаған бөліктер мен бөлек компоненттер де AOI құрамына кіреді.",
+  "zone_validation": {
+    "osm-way-57944027": true,
+    "osm-way-482026576": true,
+    "osm-way-1533348871": true,
+    "osm-way-57944007": true,
+    "osm-way-57944029": true,
+    "osm-way-1189375468": true,
+    "osm-way-57944051": true,
+    "osm-way-170066415": true,
+    "osm-way-1546881040": true,
+    "osm-way-1546881092": true,
+    "osm-way-582244955": true,
+    "osm-way-1546881081": true
+  }
+}

@@ -1,0 +1,1160 @@
+[
+  {
+    "id": "osm-way-57944027",
+    "ru": "парк Победы",
+    "kk": "Жеңіс саябағы",
+    "original_name": "парк Победы",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            76.9432586,
+            52.2865366
+          ],
+          [
+            76.9474367,
+            52.2866909
+          ],
+          [
+            76.9475706,
+            52.284965
+          ],
+          [
+            76.9434687,
+            52.2847933
+          ],
+          [
+            76.9432586,
+            52.2865366
+          ]
+        ]
+      ]
+    },
+    "area_m2": 54741.8,
+    "status": "existing_green",
+    "provenance": "osm",
+    "assessment_provenance": "synthetic",
+    "source": "https://www.openstreetmap.org/way/57944027",
+    "source_date": "2026-10-29",
+    "osm_tags": {
+      "leisure": "park",
+      "name": "Жеңіс саябағы",
+      "name:kk": "Жеңіс саябағы",
+      "name:ru": "парк Победы"
+    },
+    "center": [
+      76.945431469494,
+      52.2857508
+    ],
+    "green": 0.7,
+    "soil": "loam",
+    "moisture": 0.4,
+    "salinity": 0.2,
+    "traffic": 0.4,
+    "temperature": -38,
+    "light": "sun",
+    "heat": null,
+    "social": 0.5,
+    "population": null,
+    "status_note": "Зелёная территория по OpenStreetMap; инвентаризация деревьев не проводилась.",
+    "nearby_streets": [
+      {
+        "ru": "улица Кривенко",
+        "kk": "Кривенко көшесі",
+        "distance_m": 110,
+        "source": "https://www.openstreetmap.org/way/122821230"
+      },
+      {
+        "ru": "улица Каирбаева",
+        "kk": "Қайырбаев көшесі",
+        "distance_m": 110,
+        "source": "https://www.openstreetmap.org/way/122821231"
+      }
+    ],
+    "address_ru": "улица Кривенко / улица Каирбаева",
+    "address_kk": "Кривенко көшесі / Қайырбаев көшесі",
+    "address_date": "2026-10-29",
+    "address_kind": "nearby_streets"
+  },
+  {
+    "id": "osm-way-482026576",
+    "ru": "сквер Достық",
+    "kk": "Достық сквері",
+    "original_name": "сквер Достық",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            76.9519459,
+            52.2906034
+          ],
+          [
+            76.9528547,
+            52.2906404
+          ],
+          [
+            76.9532288,
+            52.2872086
+          ],
+          [
+            76.9523188,
+            52.2871715
+          ],
+          [
+            76.9519459,
+            52.2906034
+          ]
+        ]
+      ]
+    },
+    "area_m2": 23801.3,
+    "status": "existing_green",
+    "provenance": "osm",
+    "assessment_provenance": "synthetic",
+    "source": "https://www.openstreetmap.org/way/482026576",
+    "source_date": "2026-10-29",
+    "osm_tags": {
+      "alt_name:ru": "сквер Дружбы",
+      "leaf_type": "broadleaved",
+      "leisure": "park",
+      "name": "Достық сквері",
+      "name:etymology:wikidata": "Q491",
+      "name:kk": "Достық сквері",
+      "name:ru": "сквер Достық",
+      "natural": "wood"
+    },
+    "center": [
+      76.95258705054732,
+      52.288906
+    ],
+    "green": 0.7,
+    "soil": "loam",
+    "moisture": 0.4,
+    "salinity": 0.2,
+    "traffic": 0.4,
+    "temperature": -38,
+    "light": "sun",
+    "heat": null,
+    "social": 0.5,
+    "population": null,
+    "status_note": "Зелёная территория по OpenStreetMap; инвентаризация деревьев не проводилась.",
+    "nearby_streets": [
+      {
+        "ru": "улица Машхура Жусупа",
+        "kk": "Мәшһүр Жүсіп көшесі",
+        "distance_m": 40,
+        "source": "https://www.openstreetmap.org/way/131905050"
+      }
+    ],
+    "address_ru": "улица Машхура Жусупа",
+    "address_kk": "Мәшһүр Жүсіп көшесі",
+    "address_date": "2026-10-29",
+    "address_kind": "nearby_streets"
+  },
+  {
+    "id": "osm-way-1533348871",
+    "ru": "Парк знаков зодиака",
+    "kk": "Жұлдызнама белгілері саябағы",
+    "original_name": "Парк знаков зодиака",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            76.9471623,
+            52.2895669
+          ],
+          [
+            76.9469595,
+            52.2895614
+          ],
+          [
+            76.9470298,
+            52.2889215
+          ],
+          [
+            76.9470943,
+            52.2882358
+          ],
+          [
+            76.9473211,
+            52.2882361
+          ],
+          [
+            76.9471623,
+            52.2895669
+          ]
+        ]
+      ]
+    },
+    "area_m2": 2143.1,
+    "status": "existing_green",
+    "provenance": "osm",
+    "assessment_provenance": "synthetic",
+    "source": "https://www.openstreetmap.org/way/1533348871",
+    "source_date": "2026-10-29",
+    "osm_tags": {
+      "leisure": "park",
+      "name": "Парк знаков зодиака"
+    },
+    "center": [
+      76.94717112131156,
+      52.288578799999996
+    ],
+    "green": 0.7,
+    "soil": "loam",
+    "moisture": 0.4,
+    "salinity": 0.2,
+    "traffic": 0.4,
+    "temperature": -38,
+    "light": "sun",
+    "heat": null,
+    "social": 0.5,
+    "population": null,
+    "status_note": "Зелёная территория по OpenStreetMap; инвентаризация деревьев не проводилась.",
+    "nearby_streets": [
+      {
+        "ru": "улица Академика Бектурова",
+        "kk": "Академик Бектұров көшесі",
+        "distance_m": 20,
+        "source": "https://www.openstreetmap.org/way/355243793"
+      }
+    ],
+    "address_ru": "улица Академика Бектурова",
+    "address_kk": "Академик Бектұров көшесі",
+    "address_date": "2026-10-29",
+    "address_kind": "nearby_streets"
+  },
+  {
+    "id": "osm-way-57944007",
+    "ru": "Городской сад",
+    "kk": "Қалалық саябақ",
+    "original_name": "Городской сад",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            76.9460563,
+            52.2808354
+          ],
+          [
+            76.9500715,
+            52.2809602
+          ],
+          [
+            76.9502382,
+            52.2809124
+          ],
+          [
+            76.950305,
+            52.2790778
+          ],
+          [
+            76.9497804,
+            52.2790706
+          ],
+          [
+            76.9497815,
+            52.2790409
+          ],
+          [
+            76.9492807,
+            52.279034
+          ],
+          [
+            76.9491672,
+            52.2788889
+          ],
+          [
+            76.9490592,
+            52.2787547
+          ],
+          [
+            76.9490072,
+            52.2786823
+          ],
+          [
+            76.9490575,
+            52.2777004
+          ],
+          [
+            76.9475723,
+            52.2776873
+          ],
+          [
+            76.9475695,
+            52.2777543
+          ],
+          [
+            76.9474897,
+            52.277753
+          ],
+          [
+            76.9474806,
+            52.2778453
+          ],
+          [
+            76.9473854,
+            52.2778492
+          ],
+          [
+            76.9473092,
+            52.2778469
+          ],
+          [
+            76.9472935,
+            52.2780862
+          ],
+          [
+            76.9471422,
+            52.2780826
+          ],
+          [
+            76.9471014,
+            52.2785029
+          ],
+          [
+            76.9471994,
+            52.2785065
+          ],
+          [
+            76.9471862,
+            52.2786731
+          ],
+          [
+            76.9463341,
+            52.2786508
+          ],
+          [
+            76.9460563,
+            52.2808354
+          ]
+        ]
+      ]
+    },
+    "area_m2": 79153.7,
+    "status": "existing_green",
+    "provenance": "osm",
+    "assessment_provenance": "synthetic",
+    "source": "https://www.openstreetmap.org/way/57944007",
+    "source_date": "2026-10-29",
+    "osm_tags": {
+      "leisure": "park",
+      "name": "Қалалық саябақ",
+      "name:kk": "Қалалық саябақ",
+      "name:ru": "Городской сад",
+      "short_name:ru": "Горсад"
+    },
+    "center": [
+      76.94822052627964,
+      52.279956600000006
+    ],
+    "green": 0.7,
+    "soil": "loam",
+    "moisture": 0.4,
+    "salinity": 0.2,
+    "traffic": 0.4,
+    "temperature": -38,
+    "light": "sun",
+    "heat": null,
+    "social": 0.5,
+    "population": null,
+    "status_note": "Зелёная территория по OpenStreetMap; инвентаризация деревьев не проводилась.",
+    "nearby_streets": [
+      {
+        "ru": "улица Естая",
+        "kk": "Естай көшесі",
+        "distance_m": 120,
+        "source": "https://www.openstreetmap.org/way/58262254"
+      },
+      {
+        "ru": "улица Академика Бектурова",
+        "kk": "Академик Бектұров көшесі",
+        "distance_m": 120,
+        "source": "https://www.openstreetmap.org/way/355243793"
+      }
+    ],
+    "address_ru": "улица Естая / улица Академика Бектурова",
+    "address_kk": "Естай көшесі / Академик Бектұров көшесі",
+    "address_date": "2026-10-29",
+    "address_kind": "nearby_streets"
+  },
+  {
+    "id": "osm-way-57944029",
+    "ru": "Центральный сквер",
+    "kk": "Орталық Сквер",
+    "original_name": "Центральный сквер",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            76.9405524,
+            52.2864691
+          ],
+          [
+            76.9407146,
+            52.2846437
+          ],
+          [
+            76.9390162,
+            52.2845871
+          ],
+          [
+            76.9388535,
+            52.2864125
+          ],
+          [
+            76.9405524,
+            52.2864691
+          ]
+        ]
+      ]
+    },
+    "area_m2": 23614.4,
+    "status": "existing_green",
+    "provenance": "osm",
+    "assessment_provenance": "synthetic",
+    "source": "https://www.openstreetmap.org/way/57944029",
+    "source_date": "2026-10-29",
+    "osm_tags": {
+      "leisure": "park",
+      "name": "Орталық Сквер",
+      "name:kk": "Орталық Сквер",
+      "name:ru": "Центральный сквер"
+    },
+    "center": [
+      76.93978417112413,
+      52.28552809999999
+    ],
+    "green": 0.7,
+    "soil": "loam",
+    "moisture": 0.4,
+    "salinity": 0.2,
+    "traffic": 0.4,
+    "temperature": -38,
+    "light": "sun",
+    "heat": null,
+    "social": 0.5,
+    "population": null,
+    "status_note": "Зелёная территория по OpenStreetMap; инвентаризация деревьев не проводилась.",
+    "nearby_streets": [
+      {
+        "ru": "улица Астана",
+        "kk": "Астана көшесі",
+        "distance_m": 70,
+        "source": "https://www.openstreetmap.org/way/37202644"
+      },
+      {
+        "ru": "улица Академика Сатпаева",
+        "kk": "Академик Сәтбаев көшесі",
+        "distance_m": 80,
+        "source": "https://www.openstreetmap.org/way/58096371"
+      }
+    ],
+    "address_ru": "улица Астана / улица Академика Сатпаева",
+    "address_kk": "Астана көшесі / Академик Сәтбаев көшесі",
+    "address_date": "2026-10-29",
+    "address_kind": "nearby_streets"
+  },
+  {
+    "id": "osm-way-1189375468",
+    "ru": "Парк влюблённых",
+    "kk": "Ғашықтар саябағы",
+    "original_name": "Парк влюблённых",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            76.9388923,
+            52.2827142
+          ],
+          [
+            76.9387711,
+            52.2839047
+          ],
+          [
+            76.9375326,
+            52.2838489
+          ],
+          [
+            76.9374353,
+            52.2827008
+          ],
+          [
+            76.9377198,
+            52.2827738
+          ],
+          [
+            76.9379163,
+            52.2826873
+          ],
+          [
+            76.9388923,
+            52.2827142
+          ]
+        ]
+      ]
+    },
+    "area_m2": 11921.4,
+    "status": "existing_green",
+    "provenance": "osm",
+    "assessment_provenance": "synthetic",
+    "source": "https://www.openstreetmap.org/way/1189375468",
+    "source_date": "2026-10-29",
+    "osm_tags": {
+      "leisure": "park",
+      "name": "Ғашықтар саябағы",
+      "name:kk": "Ғашықтар саябағы",
+      "name:ru": "Парк влюблённых"
+    },
+    "center": [
+      76.93815927494839,
+      52.283311350000005
+    ],
+    "green": 0.7,
+    "soil": "loam",
+    "moisture": 0.4,
+    "salinity": 0.2,
+    "traffic": 0.4,
+    "temperature": -38,
+    "light": "sun",
+    "heat": null,
+    "social": 0.5,
+    "population": null,
+    "status_note": "Зелёная территория по OpenStreetMap; инвентаризация деревьев не проводилась.",
+    "nearby_streets": [
+      {
+        "ru": "улица Астана",
+        "kk": "Астана көшесі",
+        "distance_m": 60,
+        "source": "https://www.openstreetmap.org/way/37202644"
+      },
+      {
+        "ru": "улица Бокейхана",
+        "kk": "Бөкейхан көшесі",
+        "distance_m": 80,
+        "source": "https://www.openstreetmap.org/way/170066416"
+      }
+    ],
+    "address_ru": "улица Астана / улица Бокейхана",
+    "address_kk": "Астана көшесі / Бөкейхан көшесі",
+    "address_date": "2026-10-29",
+    "address_kind": "nearby_streets"
+  },
+  {
+    "id": "osm-way-57944051",
+    "ru": "сквер имени Машхура Жусупа",
+    "kk": "Мәшһүр Жүсіп атындағы сквері",
+    "original_name": "сквер имени Машхура Жусупа",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            76.9622644,
+            52.2872946
+          ],
+          [
+            76.964933,
+            52.2873859
+          ],
+          [
+            76.9658862,
+            52.2874185
+          ],
+          [
+            76.9658967,
+            52.2872853
+          ],
+          [
+            76.9659007,
+            52.2872444
+          ],
+          [
+            76.9660223,
+            52.2857563
+          ],
+          [
+            76.9651756,
+            52.2857229
+          ],
+          [
+            76.96483,
+            52.2859265
+          ],
+          [
+            76.9641775,
+            52.2858976
+          ],
+          [
+            76.9642033,
+            52.2856797
+          ],
+          [
+            76.9636239,
+            52.2856537
+          ],
+          [
+            76.9623594,
+            52.2856012
+          ],
+          [
+            76.9623262,
+            52.2859416
+          ],
+          [
+            76.9619254,
+            52.2859277
+          ],
+          [
+            76.9618845,
+            52.2858176
+          ],
+          [
+            76.9616768,
+            52.2858454
+          ],
+          [
+            76.9614686,
+            52.2858953
+          ],
+          [
+            76.9612903,
+            52.285986
+          ],
+          [
+            76.9611297,
+            52.2859825
+          ],
+          [
+            76.9610711,
+            52.2866441
+          ],
+          [
+            76.9612714,
+            52.2868252
+          ],
+          [
+            76.9614511,
+            52.2869383
+          ],
+          [
+            76.9616274,
+            52.286812
+          ],
+          [
+            76.961796,
+            52.2868725
+          ],
+          [
+            76.9619911,
+            52.286909
+          ],
+          [
+            76.9622959,
+            52.2869132
+          ],
+          [
+            76.9622644,
+            52.2872946
+          ]
+        ]
+      ]
+    },
+    "area_m2": 53947.7,
+    "status": "existing_green",
+    "provenance": "osm",
+    "assessment_provenance": "synthetic",
+    "source": "https://www.openstreetmap.org/way/57944051",
+    "source_date": "2026-10-29",
+    "osm_tags": {
+      "leisure": "park",
+      "name": "Мәшһүр Жүсіп атындағы сквері",
+      "name:kk": "Мәшһүр Жүсіп атындағы сквері",
+      "name:ru": "сквер имени Машхура Жусупа"
+    },
+    "center": [
+      76.96353844338753,
+      52.28631505
+    ],
+    "green": 0.7,
+    "soil": "loam",
+    "moisture": 0.4,
+    "salinity": 0.2,
+    "traffic": 0.4,
+    "temperature": -38,
+    "light": "sun",
+    "heat": null,
+    "social": 0.5,
+    "population": null,
+    "status_note": "Зелёная территория по OpenStreetMap; инвентаризация деревьев не проводилась.",
+    "nearby_streets": [
+      {
+        "ru": "улица Кривенко",
+        "kk": "Кривенко көшесі",
+        "distance_m": 90,
+        "source": "https://www.openstreetmap.org/way/26767775"
+      },
+      {
+        "ru": "улица Каирбаева",
+        "kk": "Қайырбаев көшесі",
+        "distance_m": 130,
+        "source": "https://www.openstreetmap.org/way/37202638"
+      }
+    ],
+    "address_ru": "улица Кривенко / улица Каирбаева",
+    "address_kk": "Кривенко көшесі / Қайырбаев көшесі",
+    "address_date": "2026-10-29",
+    "address_kind": "nearby_streets"
+  },
+  {
+    "id": "osm-way-170066415",
+    "ru": "Сквер \"Детства\"",
+    "kk": "\"Балалық Шақ\" Сквері",
+    "original_name": "Сквер \"Детства\"",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            76.9376331,
+            52.275927
+          ],
+          [
+            76.9395716,
+            52.275986
+          ],
+          [
+            76.9396426,
+            52.275113
+          ],
+          [
+            76.937704,
+            52.275054
+          ],
+          [
+            76.9376331,
+            52.275927
+          ]
+        ]
+      ]
+    },
+    "area_m2": 12885.2,
+    "status": "existing_green",
+    "provenance": "osm",
+    "assessment_provenance": "synthetic",
+    "source": "https://www.openstreetmap.org/way/170066415",
+    "source_date": "2026-10-29",
+    "osm_tags": {
+      "leisure": "park",
+      "name": "\"Балалық Шақ\" Сквері",
+      "name:ru": "Сквер \"Детства\""
+    },
+    "center": [
+      76.93863782668959,
+      52.27552
+    ],
+    "green": 0.7,
+    "soil": "loam",
+    "moisture": 0.4,
+    "salinity": 0.2,
+    "traffic": 0.4,
+    "temperature": -38,
+    "light": "sun",
+    "heat": null,
+    "social": 0.5,
+    "population": null,
+    "status_note": "Зелёная территория по OpenStreetMap; инвентаризация деревьев не проводилась.",
+    "nearby_streets": [
+      {
+        "ru": "улица Толстого",
+        "kk": "Толстой көшесі",
+        "distance_m": 60,
+        "source": "https://www.openstreetmap.org/way/26772270"
+      },
+      {
+        "ru": "улица Бокейхана",
+        "kk": "Бөкейхан көшесі",
+        "distance_m": 70,
+        "source": "https://www.openstreetmap.org/way/390854415"
+      }
+    ],
+    "address_ru": "улица Толстого / улица Бокейхана",
+    "address_kk": "Толстой көшесі / Бөкейхан көшесі",
+    "address_date": "2026-10-29",
+    "address_kind": "nearby_streets"
+  },
+  {
+    "id": "osm-way-1546881040",
+    "ru": "Участок для оценки посадок №1",
+    "kk": "Отырғызуды бағалау аумағы №1",
+    "original_name": "Без названия в OSM",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            76.9493599,
+            52.2909491
+          ],
+          [
+            76.9493766,
+            52.2908399
+          ],
+          [
+            76.9493431,
+            52.290824
+          ],
+          [
+            76.9491209,
+            52.2908129
+          ],
+          [
+            76.9490692,
+            52.2908389
+          ],
+          [
+            76.9488424,
+            52.2908402
+          ],
+          [
+            76.9475214,
+            52.290786
+          ],
+          [
+            76.9476027,
+            52.290874
+          ],
+          [
+            76.9485959,
+            52.2909114
+          ],
+          [
+            76.9493599,
+            52.2909491
+          ]
+        ]
+      ]
+    },
+    "area_m2": 1236.1,
+    "status": "planting_candidate",
+    "provenance": "osm",
+    "assessment_provenance": "synthetic",
+    "source": "https://www.openstreetmap.org/way/1546881040",
+    "source_date": "2026-10-29",
+    "osm_tags": {
+      "landuse": "grass"
+    },
+    "center": [
+      76.94848052815081,
+      52.2908571
+    ],
+    "green": 0.25,
+    "soil": "loam",
+    "moisture": 0.4,
+    "salinity": 0.2,
+    "traffic": 0.4,
+    "temperature": -38,
+    "light": "sun",
+    "heat": null,
+    "social": 0.5,
+    "population": null,
+    "status_note": "Предложение для обследования открытой территории по OSM. Отсутствие деревьев, право посадки и отсутствие коммуникаций не подтверждены.",
+    "nearby_streets": [
+      {
+        "ru": "улица Лермонтова",
+        "kk": "Лермонтов көшесі",
+        "distance_m": 20,
+        "source": "https://www.openstreetmap.org/way/42125193"
+      },
+      {
+        "ru": "улица Академика Бектурова",
+        "kk": "Академик Бектұров көшесі",
+        "distance_m": 90,
+        "source": "https://www.openstreetmap.org/way/355243793"
+      }
+    ],
+    "address_ru": "улица Лермонтова / улица Академика Бектурова",
+    "address_kk": "Лермонтов көшесі / Академик Бектұров көшесі",
+    "address_date": "2026-10-29",
+    "address_kind": "nearby_streets"
+  },
+  {
+    "id": "osm-way-1546881092",
+    "ru": "Участок для оценки посадок №2",
+    "kk": "Отырғызуды бағалау аумағы №2",
+    "original_name": "Без названия в OSM",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            76.953439,
+            52.2911423
+          ],
+          [
+            76.9534694,
+            52.2909939
+          ],
+          [
+            76.9534038,
+            52.2909618
+          ],
+          [
+            76.9532321,
+            52.2910186
+          ],
+          [
+            76.9520584,
+            52.2909739
+          ],
+          [
+            76.9522092,
+            52.291114
+          ],
+          [
+            76.9524108,
+            52.2911217
+          ],
+          [
+            76.9524126,
+            52.2911052
+          ],
+          [
+            76.953439,
+            52.2911423
+          ]
+        ]
+      ]
+    },
+    "area_m2": 1269.5,
+    "status": "planting_candidate",
+    "provenance": "osm",
+    "assessment_provenance": "synthetic",
+    "source": "https://www.openstreetmap.org/way/1546881092",
+    "source_date": "2026-10-29",
+    "osm_tags": {
+      "landuse": "grass"
+    },
+    "center": [
+      76.95280429549726,
+      52.2910619
+    ],
+    "green": 0.25,
+    "soil": "loam",
+    "moisture": 0.4,
+    "salinity": 0.2,
+    "traffic": 0.4,
+    "temperature": -38,
+    "light": "sun",
+    "heat": null,
+    "social": 0.5,
+    "population": null,
+    "status_note": "Предложение для обследования открытой территории по OSM. Отсутствие деревьев, право посадки и отсутствие коммуникаций не подтверждены.",
+    "nearby_streets": [
+      {
+        "ru": "улица Лермонтова",
+        "kk": "Лермонтов көшесі",
+        "distance_m": 20,
+        "source": "https://www.openstreetmap.org/way/42125193"
+      },
+      {
+        "ru": "улица Машхура Жусупа",
+        "kk": "Мәшһүр Жүсіп көшесі",
+        "distance_m": 70,
+        "source": "https://www.openstreetmap.org/way/131905050"
+      }
+    ],
+    "address_ru": "улица Лермонтова / улица Машхура Жусупа",
+    "address_kk": "Лермонтов көшесі / Мәшһүр Жүсіп көшесі",
+    "address_date": "2026-10-29",
+    "address_kind": "nearby_streets"
+  },
+  {
+    "id": "osm-way-582244955",
+    "ru": "Участок для оценки посадок №3",
+    "kk": "Отырғызуды бағалау аумағы №3",
+    "original_name": "Без названия в OSM",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            76.937671,
+            52.2863369
+          ],
+          [
+            76.9384956,
+            52.2863659
+          ],
+          [
+            76.9383458,
+            52.2861423
+          ],
+          [
+            76.937998,
+            52.2861127
+          ],
+          [
+            76.9379613,
+            52.2860699
+          ],
+          [
+            76.9379205,
+            52.2860549
+          ],
+          [
+            76.9378823,
+            52.2860475
+          ],
+          [
+            76.9378309,
+            52.2860559
+          ],
+          [
+            76.937766,
+            52.2860877
+          ],
+          [
+            76.9377334,
+            52.2861378
+          ],
+          [
+            76.9377413,
+            52.2861768
+          ],
+          [
+            76.9377936,
+            52.2862113
+          ],
+          [
+            76.937671,
+            52.2863369
+          ]
+        ]
+      ]
+    },
+    "area_m2": 1262.7,
+    "status": "planting_candidate",
+    "provenance": "osm",
+    "assessment_provenance": "synthetic",
+    "source": "https://www.openstreetmap.org/way/582244955",
+    "source_date": "2026-10-29",
+    "osm_tags": {
+      "landuse": "grass"
+    },
+    "center": [
+      76.93807395986136,
+      52.28619405
+    ],
+    "green": 0.25,
+    "soil": "loam",
+    "moisture": 0.4,
+    "salinity": 0.2,
+    "traffic": 0.4,
+    "temperature": -38,
+    "light": "sun",
+    "heat": null,
+    "social": 0.5,
+    "population": null,
+    "status_note": "Предложение для обследования открытой территории по OSM. Отсутствие деревьев, право посадки и отсутствие коммуникаций не подтверждены.",
+    "nearby_streets": [
+      {
+        "ru": "улица Астана",
+        "kk": "Астана көшесі",
+        "distance_m": 50,
+        "source": "https://www.openstreetmap.org/way/37202644"
+      },
+      {
+        "ru": "улица Каирбаева",
+        "kk": "Қайырбаев көшесі",
+        "distance_m": 50,
+        "source": "https://www.openstreetmap.org/way/122821229"
+      }
+    ],
+    "address_ru": "улица Астана / улица Каирбаева",
+    "address_kk": "Астана көшесі / Қайырбаев көшесі",
+    "address_date": "2026-10-29",
+    "address_kind": "nearby_streets"
+  },
+  {
+    "id": "osm-way-1546881081",
+    "ru": "Участок для оценки посадок №4",
+    "kk": "Отырғызуды бағалау аумағы №4",
+    "original_name": "Без названия в OSM",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            76.9660959,
+            52.2890268
+          ],
+          [
+            76.9663692,
+            52.2859069
+          ],
+          [
+            76.9662657,
+            52.2860599
+          ],
+          [
+            76.9659953,
+            52.2890209
+          ],
+          [
+            76.9660959,
+            52.2890268
+          ]
+        ]
+      ]
+    },
+    "area_m2": 2204.1,
+    "status": "planting_candidate",
+    "provenance": "osm",
+    "assessment_provenance": "synthetic",
+    "source": "https://www.openstreetmap.org/way/1546881081",
+    "source_date": "2026-10-29",
+    "osm_tags": {
+      "landuse": "grass"
+    },
+    "center": [
+      76.96617830354819,
+      52.2875404
+    ],
+    "green": 0.25,
+    "soil": "loam",
+    "moisture": 0.4,
+    "salinity": 0.2,
+    "traffic": 0.4,
+    "temperature": -38,
+    "light": "sun",
+    "heat": null,
+    "social": 0.5,
+    "population": null,
+    "status_note": "Предложение для обследования открытой территории по OSM. Отсутствие деревьев, право посадки и отсутствие коммуникаций не подтверждены.",
+    "nearby_streets": [
+      {
+        "ru": "улица Каирбаева",
+        "kk": "Қайырбаев көшесі",
+        "distance_m": 10,
+        "source": "https://www.openstreetmap.org/way/37202638"
+      },
+      {
+        "ru": "проспект Нурсултана Назарбаева",
+        "kk": "Нұрсұлтан Назарбаев даңғылы",
+        "distance_m": 10,
+        "source": "https://www.openstreetmap.org/way/23490736"
+      }
+    ],
+    "address_ru": "улица Каирбаева / проспект Нурсултана Назарбаева",
+    "address_kk": "Қайырбаев көшесі / Нұрсұлтан Назарбаев даңғылы",
+    "address_date": "2026-10-29",
+    "address_kind": "nearby_streets"
+  }
+]

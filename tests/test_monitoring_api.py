@@ -65,7 +65,7 @@ def test_zero_common_pixels_keep_means_and_areas_null(client,products):
  assert result['statistics']['mean_ndvi_difference'] is None
 
 def test_tiles_are_png_and_bounds_are_validated(client,products):
- assert client.get('/api/monitoring/tiles/changes/10/0/0').status_code==422
+ assert client.get('/api/monitoring/tiles/changes/7/0/0').status_code==422
  assert client.get('/api/monitoring/tiles/changes/15/-1/0').status_code==422
  result=client.get('/api/monitoring/tiles/changes/15/0/0')
  assert result.status_code==200 and result.headers['content-type']=='image/png'

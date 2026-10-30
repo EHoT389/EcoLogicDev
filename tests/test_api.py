@@ -39,6 +39,17 @@ def test_analysis_and_ai_without_key(client):
  assert client.post('/api/analysis',json={'geometry':ZONES[0]['geometry']},headers={'Origin':'https://evil.example'}).status_code==403
  assert client.post('/api/analysis',json={'geometry':ZONES[0]['geometry']},headers={'Origin':'http://127.0.0.1:4173'}).status_code==200
 
+def test_local_origin_fallback_stays_development_only(client,monkeypatch):
+ import backend.main as main
+ payload={'geometry':ZONES[0]['geometry']}
+ for origin in ('http://localhost:5327','http://127.0.0.1:5327'):
+  assert client.post('/api/analysis',json=payload,headers={'Origin':origin}).status_code==200
+ for origin in ('https://localhost.evil.example:5327','http://127.0.0.1.evil.example:5327','null'):
+  assert client.post('/api/analysis',json=payload,headers={'Origin':origin}).status_code==403
+ monkeypatch.setattr(main,'production',True)
+ assert client.post('/api/analysis',json=payload,headers={'Origin':'http://localhost:5327'}).status_code==403
+ assert client.post('/api/analysis',json=payload).status_code==403
+
 def test_admin_import_and_audit(client):
  data=register(client,'admin-test@example.com')
  with SessionLocal() as db:

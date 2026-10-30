@@ -324,7 +324,7 @@ def _tile(signature,year,z,x,y,threshold,layer='vegetation'):
  output=BytesIO();Image.fromarray(rgba).save(output,format='PNG');return output.getvalue()
 
 def tile_png(year,z,x,y,threshold=.3,layer='vegetation'):
- if year not in ('2020','2026','changes') or not 11<=z<=19 or not (0<=x<2**z and 0<=y<2**z): raise HTTPException(422,'Invalid tile coordinates or period')
+ if year not in ('2020','2026','changes') or not 8<=z<=19 or not (0<=x<2**z and 0<=y<2**z): raise HTTPException(422,'Invalid tile coordinates or period')
  if layer not in ('vegetation','ndvi','quality'):raise HTTPException(422,'Invalid satellite layer')
  check_threshold(threshold)
  return _tile(_signature(data_directory()),year,z,x,y,threshold,layer)

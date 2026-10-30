@@ -16,3 +16,4 @@ pyshp>=2.3,<3
 numpy>=2,<3
 rasterio>=1.4,<2
 Pillow>=11,<13
+pypdf>=6,<7

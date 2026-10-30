@@ -4,3 +4,138 @@
 @media(max-width:650px){.monitoring-page .page-heading{gap:15px}.monitoring-page .page-heading>.badge{align-self:flex-start;font-size:9px}.monitoring-scope-note{font-size:10px;padding:12px;gap:8px;margin-bottom:17px}.monitoring-error{flex-wrap:wrap}.monitoring-error .btn{margin-left:30px}.monitoring-source-unavailable{padding:17px;gap:12px;align-items:flex-start}.monitoring-satellite-icon{width:37px;height:37px;border-radius:8px}.monitoring-satellite-icon svg{width:22px;height:22px}.monitoring-source-unavailable h2{font-size:16px}.monitoring-source-unavailable p{font-size:11px}.monitoring-source-unavailable small{font-size:9px}.monitoring-mode-tabs{grid-template-columns:1fr 1fr;gap:4px;padding:7px}.monitoring-mode-tabs button{font-size:10px;padding:10px 7px}.monitoring-map-shell{height:400px}.monitoring-map-top>span{font-size:8px;max-width:230px;padding:7px 9px}.monitoring-map-top{top:10px;left:9px;right:9px;gap:7px}.monitoring-map-status{font-size:9px;left:9px;padding:9px;bottom:45px;gap:7px}.monitoring-map-footer{padding:13px;gap:15px}.monitoring-legend{font-size:8px;gap:8px 13px}.monitoring-opacity{font-size:9px;gap:10px}.monitoring-swipe-control{padding:13px}.monitoring-controls{display:block;padding:20px}.monitoring-control-divider{display:block;margin:20px 0}.monitoring-controls>.monitoring-panel-title{margin-bottom:14px}.monitoring-controls>.monitoring-panel-quality{margin:20px 0 14px}.monitoring-selected-name{font-size:16px!important}.monitoring-stat-heading{margin:25px 0 16px;align-items:flex-start}.monitoring-stat-heading h2{font-size:19px}.monitoring-stat-heading .eyebrow{font-size:7px;line-height:1.8}.monitoring-updating{font-size:9px;white-space:nowrap;margin-top:4px}.monitoring-stat-grid{grid-template-columns:1fr 1fr;gap:10px}.monitoring-stat{padding:15px 13px}.monitoring-stat>div{font-size:9px;gap:6px}.monitoring-stat svg{width:14px;height:14px}.monitoring-stat>strong{font-size:24px;margin-top:13px}.monitoring-stat>strong>small{font-size:10px;margin-left:4px}.monitoring-stat>p{font-size:8px;line-height:1.8;margin-top:9px}.monitoring-stat.compact>strong{font-size:17px;line-height:1.6}.monitoring-bottom-grid{grid-template-columns:1fr;gap:17px}.monitoring-panel-title h3{font-size:13px}.monitoring-method p,.monitoring-export>p,.monitoring-sources>p{font-size:10px}.monitoring-formula{font-size:12px!important;padding:11px}.monitoring-source-heading{align-items:flex-start;flex-direction:column;gap:11px}.monitoring-source-heading h3{font-size:16px}.monitoring-period-cards{gap:9px}.monitoring-period-cards>div{padding:12px;gap:7px}.monitoring-period-cards span{font-size:9px}.monitoring-period-cards small{font-size:8px}.monitoring-period-cards strong{font-size:17px}.monitoring-attribution{font-size:8px}.monitoring-no-comparison{font-size:10px;align-items:flex-start;padding:12px}.monitoring-no-comparison svg{margin-top:2px}}
 [data-theme=dark] .monitoring-source-unavailable{border-color:#645a3e}[data-theme=dark] .monitoring-satellite-icon{background:#49422d;color:#c6b37e}[data-theme=dark] .monitoring-error{background:#42322c;border-color:#71503f;color:#d3a48b}[data-theme=dark] .monitoring-no-comparison{background:#3c392a;border-color:#665d3d;color:#c4b989}[data-theme=dark] .monitoring-map-top>span,[data-theme=dark] .monitoring-map-top>button{background:#26392ef2;color:#b4c7a4;border-color:#4a5d42}[data-theme=dark] .monitoring-map-status{background:#293a2cf5;color:#bdc5a3;border-color:#657052}
 .monitoring-tile-retry{border:1px solid #d9bfae;background:#fff9f4;border-radius:4px;padding:5px 8px;font-size:9px;color:#945e45;flex-shrink:0;margin-left:auto}
+
+
+/* Container for the comparison swipe overlay */
+.monitoring-swipe-container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 600;
+  overflow: hidden;
+}
+
+/* Vertical divider line */
+.monitoring-swipe-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: #ffffff;
+  pointer-events: auto;
+  cursor: col-resize;
+  touch-action: none;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35), 0 0 16px rgba(0, 0, 0, 0.4);
+  transform: translateX(-50%);
+  transition: none;
+}
+
+/* Generous touch / mouse hit area around the line */
+.monitoring-swipe-hitarea {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -22px;
+  width: 47px;
+  cursor: col-resize;
+  touch-action: none;
+}
+
+/* Draggable thumb / handle */
+.monitoring-swipe-handle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #ffffff;
+  color: #173d2c;
+  padding: 6px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20px;
+  border: 2px solid #2d6a4f;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  cursor: col-resize;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  min-width: 44px;
+  gap: 2px;
+}
+
+.monitoring-swipe-line:focus-visible .monitoring-swipe-handle {
+  outline: 3px solid #52b788;
+  outline-offset: 2px;
+}
+
+.monitoring-swipe-arrows {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  line-height: 1;
+}
+
+.monitoring-swipe-pct {
+  font-size: 9px;
+  font-weight: 700;
+  color: #2d6a4f;
+  line-height: 1;
+}
+
+/* Floating year badges on either side of the map */
+.monitoring-swipe-label {
+  position: absolute;
+  top: 156px;
+  z-index: 550;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(18, 48, 33, 0.92);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #ffffff;
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.monitoring-swipe-label.left {
+  left: 14px;
+}
+
+.monitoring-swipe-label.right {
+  right: 14px;
+}
+
+.monitoring-swipe-label .label-year {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  line-height: 1.2;
+}
+
+.monitoring-swipe-label .label-sub {
+  font-size: 9px;
+  opacity: 0.85;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+@media(max-width: 760px) {
+  .monitoring-swipe-label {
+    top: 148px;
+    padding: 4px 9px;
+  }
+  .monitoring-swipe-label .label-year {
+    font-size: 13px;
+  }
+  .monitoring-swipe-label .label-sub {
+    font-size: 8px;
+  }
+}

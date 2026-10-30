@@ -42,8 +42,14 @@ def get_vegetation_change(arguments: VegetationChangeArguments, selected_zone: d
             ],
         } for year in (2020, 2026)
     }
-    scope = result.get('scope')
-    coverage_desc = 'The processed area covers the administrative territory of Pavlodar (relation 5501700, 630.38 km²).' if scope == 'administrative_city' else 'The processed area is a central Pavlodar pilot, not the whole city.'
+    # A zone result has scope=zone even when its source is the city dataset.
+    # Resolve source coverage from verified server metadata, not selection scope.
+    aoi = result.get('aoi') or {}
+    city = bool(aoi.get('id') and result.get('coverage'))
+    compact['dataset_scope'] = 'administrative_city' if city else 'pavlodar_centre'
+    compact['aoi'] = {key: aoi.get(key) for key in ('id', 'name_ru', 'name_kk', 'area_km2', 'source')} if city else None
+    coverage_desc = ('The source dataset covers the verified administrative territory of Pavlodar. '
+                     'This result describes only the selected zone, not the entire city.') if city else 'The source dataset is a central Pavlodar pilot, not the whole city.'
     compact['interpretation_rules'] = [
         'Use only statistics returned here; status other than ready means no verified numerical comparison.',
         coverage_desc + ' Means and areas use common valid pixels.',

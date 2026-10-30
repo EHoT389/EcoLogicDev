@@ -185,11 +185,9 @@ def process_year(year, items, boundary, grid, output, signature, block_size):
             counts = np.zeros(inside.shape, dtype='uint16')
             cached = block_cache / f'{int(window.row_off)}-{int(window.col_off)}.npz'
             if inside.any():
-                if not cached.exists():
-                    for prior in (output / 'blocks').glob(f'*/{year}/{cached.name}'):
-                        if prior.exists():
-                            cached = prior
-                            break
+                # Only this fingerprint matches the AOI, source scenes, grid and
+                # processing code. Another run's block can have the same shape
+                # while containing different observations or radiometry.
                 if cached.exists():
                     with np.load(cached, allow_pickle=False) as saved:
                         ndvi, counts = saved['ndvi'], saved['count']

@@ -76,6 +76,10 @@ def test_block_products_resume_mask_clouds_and_compute_native_pixel_areas(tmp_pa
     # Re-running a completed year uses validated per-block checkpoints.
     monkeypatch.setattr(pipeline, 'observation_block', lambda *args: (_ for _ in ()).throw(AssertionError('cache not used')))
     pipeline.process_year(2020, scenes[2020], {}, grid, tmp_path, 'explicit-fixture-v1', 128)
+    # A changed source/code fingerprint must recompute, even if an older cache
+    # has the same block dimensions. Otherwise revised inputs silently go stale.
+    with pytest.raises(AssertionError, match='cache not used'):
+        pipeline.process_year(2020, scenes[2020], {}, grid, tmp_path, 'explicit-fixture-v2', 128)
     statistics, coverage = pipeline.final_statistics_and_changes(grid, tmp_path, 128)
     assert coverage['total_aoi_pixels'] == 15 and coverage['common_valid_pixels'] == 14
     assert coverage['years']['2020']['valid_fraction'] == pytest.approx(14 / 15)

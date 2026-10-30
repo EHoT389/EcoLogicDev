@@ -76,3 +76,18 @@ def test_chat_tool_context_uses_validated_zone_and_actual_threshold(monkeypatch)
         untrusted_stats = {**payload, 'monitoring': {**payload['monitoring'], 'statistics': {'gain_ha': 9999}}}
         assert client.post('/api/ai/chat', json=untrusted_stats).status_code == 422
     assert len(contexts) == 1 and len(calls) == 1
+
+
+def test_city_zone_keeps_city_source_scope_without_claiming_city_statistics(monkeypatch):
+    zone_id = ZONES[0]['id']
+    monkeypatch.setattr(ai_tool.service, 'get_vegetation_change', lambda **kwargs: {
+        'status': 'ready', 'scope': 'zone', 'zone_id': zone_id,
+        'aoi': {'id': 'osm-relation-5501700', 'name_ru': 'Pavlodar', 'area_km2': 630.595,
+                'geometry': {'excluded': 'cloud context'}},
+        'coverage': {'common_fraction': .997}, 'statistics': {'gain_ha': 1.23},
+    })
+    result = get_vegetation_change(VegetationChangeArguments(zone_id=zone_id), {'id': zone_id})['result']
+    assert result['scope'] == 'zone' and result['dataset_scope'] == 'administrative_city'
+    assert result['aoi']['area_km2'] == 630.595 and 'geometry' not in result['aoi']
+    rules = ' '.join(result['interpretation_rules'])
+    assert 'pilot' not in rules and 'only the selected zone' in rules

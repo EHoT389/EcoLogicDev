@@ -9,7 +9,7 @@ import {statusLabel,zoneAddress} from './zoneModel';
 import {API} from './api';
 import type {UnifiedMapState,UnifiedMonitoringMetadata} from './unifiedMapModel';
 
-export type MapViewProps={zones:Zone[];selected:Geometry|null;analysis:Analysis|null;onZone:(z:Zone)=>void;onDraw:(g:Geometry)=>void;onAskAI:(z:Zone)=>void;onRename:(z:Zone)=>void;kk:boolean;expanded?:boolean;imported?:any[];showPlantings?:boolean;workspace?:UnifiedMapState&{metadata?:UnifiedMonitoringMetadata;onAnalyze?:(zone:Zone)=>void}};
+export type MapViewProps={zones:Zone[];selected:Geometry|null;analysis:Analysis|null;onZone:(z:Zone)=>void;onDraw:(g:Geometry)=>void;onAskAI:(z:Zone)=>void;onRename:(z:Zone)=>void;kk:boolean;expanded?:boolean;imported?:any[];showPlantings?:boolean;workspace?:UnifiedMapState&{metadata?:UnifiedMonitoringMetadata;onAnalyze?:(zone:Zone)=>void;onSwipe?:(swipe:number)=>void}};
 export default function MapView({zones,selected,analysis,onZone,onDraw,onAskAI,onRename,kk,expanded,imported=[],showPlantings=false,workspace}:MapViewProps){
  const node=useRef<HTMLDivElement>(null),map=useRef<L.Map|null>(null),drawing=useRef<any>(null);
  const satelliteLayers=useRef<L.TileLayer[]>([]),editable=useRef<L.FeatureGroup|null>(null),workspaceRef=useRef(workspace);workspaceRef.current=workspace;
@@ -19,33 +19,125 @@ export default function MapView({zones,selected,analysis,onZone,onDraw,onAskAI,o
  const [panel,setPanel]=useState(false),[query,setQuery]=useState(''),[searching,setSearching]=useState(false),[searchError,setSearchError]=useState(''),[labelsVisible,setLabelsVisible]=useState(false),[drawingNow,setDrawingNow]=useState(false),[editingNow,setEditingNow]=useState(false),[tileError,setTileError]=useState(false);
  const lastSearch=useRef(0);
  const satelliteMode=workspace?.mode==='satellite'||workspace?.mode==='changes';
- function clipSatelliteLayers(){
+ const initialSwipe=workspace?.swipe??50;
+ const [localSwipe,setLocalSwipe]=useState(initialSwipe);
+ const isDragging=useRef(false);
+ const localSwipeRef=useRef(initialSwipe);
+ localSwipeRef.current=localSwipe;
+
+ function clipSatelliteLayers(customSwipe?:number){
   const m=map.current;if(!m)return;
-  const config=workspaceRef.current,nw=m.containerPointToLayerPoint([0,0]),se=m.containerPointToLayerPoint(m.getSize());
-  const split=nw.x+m.getSize().x*(config?.swipe??50)/100;
-  satelliteLayers.current.forEach((layer,index)=>{const element=layer.getContainer();if(element)element.style.clip=config?.compare?(index===0?`rect(${nw.y}px,${split}px,${se.y}px,${nw.x}px)`:`rect(${nw.y}px,${se.x}px,${se.y}px,${split}px)`):'auto'});
+  const config=workspaceRef.current;
+  const isCompare=!!config?.compare&&(config.mode==='satellite'||config.mode==='changes');
+  if(!isCompare||satelliteLayers.current.length<2){
+   satelliteLayers.current.forEach(layer=>{
+    const element=layer.getContainer();
+    if(element){
+     element.style.clipPath='';
+     (element.style as any).webkitClipPath='';
+     element.style.clip='auto';
+    }
+   });
+   return;
+  }
+  const swipeVal=customSwipe!==undefined?customSwipe:(localSwipeRef.current??config?.swipe??50);
+  const size=m.getSize();if(size.x<=0||size.y<=0)return;
+  const nw=m.containerPointToLayerPoint([0,0]),se=m.containerPointToLayerPoint(size);
+  const splitX=Math.round(nw.x+(se.x-nw.x)*(swipeVal/100));
+  const pad=200;
+  const topY=Math.round(nw.y)-pad,bottomY=Math.round(se.y)+pad,leftX=Math.round(nw.x)-pad,rightX=Math.round(se.x)+pad;
+  satelliteLayers.current.forEach((layer,index)=>{
+   const element=layer.getContainer();if(!element)return;
+   const poly=index===0
+    ?`polygon(${leftX}px ${topY}px, ${splitX}px ${topY}px, ${splitX}px ${bottomY}px, ${leftX}px ${bottomY}px)`
+    :`polygon(${splitX}px ${topY}px, ${rightX}px ${topY}px, ${rightX}px ${bottomY}px, ${splitX}px ${bottomY}px)`;
+   element.style.clipPath=poly;
+   (element.style as any).webkitClipPath=poly;
+   element.style.clip='auto';
+  });
  }
+
+ useEffect(()=>{
+  if(!isDragging.current&&workspace?.swipe!==undefined&&workspace.swipe!==localSwipeRef.current){
+   setLocalSwipe(workspace.swipe);
+   localSwipeRef.current=workspace.swipe;
+   clipSatelliteLayers(workspace.swipe);
+  }
+ },[workspace?.swipe]);
+
+ function updateSwipeFromClientX(clientX:number,notifyParent=false){
+  if(!node.current)return;
+  const rect=node.current.getBoundingClientRect();
+  if(rect.width<=0)return;
+  const pct=((clientX-rect.left)/rect.width)*100;
+  const clamped=Math.max(1,Math.min(99,Math.round(pct*10)/10));
+  setLocalSwipe(clamped);
+  localSwipeRef.current=clamped;
+  clipSatelliteLayers(clamped);
+  if(notifyParent){
+   workspaceRef.current?.onSwipe?.(clamped);
+  }
+ }
+
+ function handlePointerDown(e:React.PointerEvent){
+  e.preventDefault();
+  e.stopPropagation();
+  isDragging.current=true;
+  try{(e.currentTarget as HTMLElement).setPointerCapture(e.pointerId)}catch{}
+  updateSwipeFromClientX(e.clientX,false);
+ }
+
+ function handlePointerMove(e:React.PointerEvent){
+  if(!isDragging.current)return;
+  e.preventDefault();
+  updateSwipeFromClientX(e.clientX,false);
+ }
+
+ function handlePointerUp(e:React.PointerEvent){
+  if(!isDragging.current)return;
+  isDragging.current=false;
+  try{(e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId)}catch{}
+  updateSwipeFromClientX(e.clientX,true);
+ }
+
+ function handleKeyDown(e:React.KeyboardEvent){
+  let step=0;
+  if(e.key==='ArrowLeft')step=e.shiftKey?-1:-5;
+  else if(e.key==='ArrowRight')step=e.shiftKey?1:5;
+  else if(e.key==='Home')step=-100;
+  else if(e.key==='End')step=100;
+  else return;
+  e.preventDefault();
+  const next=Math.max(1,Math.min(99,localSwipeRef.current+step));
+  setLocalSwipe(next);
+  localSwipeRef.current=next;
+  clipSatelliteLayers(next);
+  workspaceRef.current?.onSwipe?.(next);
+ }
+
  useEffect(()=>{
   const local=(L as any).drawLocal.draw.handlers;
   local.polygon.tooltip={start:kk?'Аумақты сызу үшін картаны басыңыз.':'Нажмите на карту, чтобы начать контур.',cont:kk?'Келесі нүктені басыңыз.':'Нажмите, чтобы добавить точку.',end:kk?'Аяқтау үшін бірінші нүктені басыңыз.':'Нажмите первую точку, чтобы завершить контур.'};
   local.polyline.error=kk?'Шекара өзімен қиылыспауы керек.':'Граница не должна пересекать сама себя.';
-  node.current?.querySelector('.leaflet-control-zoom-in')?.setAttribute('title',kk?'Жақындату':'Приблизить');
-  node.current?.querySelector('.leaflet-control-zoom-out')?.setAttribute('title',kk?'Алыстату':'Отдалить');
+  for(const attribute of ['title','aria-label']){
+   node.current?.querySelector('.leaflet-control-zoom-in')?.setAttribute(attribute,kk?'Жақындату':'Приблизить');
+   node.current?.querySelector('.leaflet-control-zoom-out')?.setAttribute(attribute,kk?'Алыстату':'Отдалить');
+  }
  },[kk]);
  useEffect(()=>{
   if(!node.current||map.current)return;
-  const m=L.map(node.current,{center:[52.285,76.951],zoom:14,zoomControl:false,scrollWheelZoom:true});map.current=m;
+  const m=L.map(node.current,{center:[52.285,76.951],zoom:14,minZoom:8,maxZoom:19,zoomControl:false,scrollWheelZoom:true});map.current=m;
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}).addTo(m);
   L.control.zoom({position:'bottomright',zoomInTitle:kk?'Жақындату':'Приблизить',zoomOutTitle:kk?'Алыстату':'Отдалить'}).addTo(m);
   L.control.scale({imperial:false,position:'bottomleft'}).addTo(m);
   editable.current=L.featureGroup().addTo(m);
-  m.on('move zoom resize',clipSatelliteLayers);
+  m.on('move zoom zoomanim viewreset resize',()=>clipSatelliteLayers());
   drawing.current=new L.Draw.Polygon(m,{allowIntersection:false,showArea:true,shapeOptions:{color:'#bf7b36',fillOpacity:.15}});
   m.on(L.Draw.Event.CREATED,(event:any)=>{callback.current.onDraw(event.layer.toGeoJSON().geometry);setDrawingNow(false)});
   m.on('draw:drawstop',()=>setDrawingNow(false));
   m.on('zoomend',()=>setLabelsVisible(m.getZoom()>=15));setLabelsVisible(m.getZoom()>=15);
   m.on('popupclose',()=>{popup.current=null;popupZone.current=null});
-  const resize=new ResizeObserver(()=>m.invalidateSize());resize.observe(node.current);
+  const resize=new ResizeObserver(()=>{m.invalidateSize();clipSatelliteLayers()});resize.observe(node.current);
   return()=>{resize.disconnect();m.remove();map.current=null};
  },[]);
  useEffect(()=>{
@@ -59,8 +151,8 @@ export default function MapView({zones,selected,analysis,onZone,onDraw,onAskAI,o
     const years=workspace.compare?['2020','2026']:[workspace.mode==='changes'?'changes':workspace.year];
     years.forEach((year,index)=>{
      const params=new URLSearchParams({threshold:String(workspace.threshold),v:metadata.dataset_id||metadata.version||'',layer:workspace.mode==='changes'&&!workspace.compare?'vegetation':kind});
-     const layer=L.tileLayer(`${API}/api/monitoring/tiles/${year}/{z}/{x}/{y}?${params}`,{minZoom:11,maxZoom:19,opacity:workspace.opacity,attribution:index===0?'Contains modified Copernicus Sentinel data (2020, 2026)':''});
-     layer.on('tileerror',()=>setTileError(true));layer.on('load',clipSatelliteLayers);layer.addTo(m);satelliteLayers.current.push(layer);
+     const layer=L.tileLayer(`${API}/api/monitoring/tiles/${year}/{z}/{x}/{y}?${params}`,{minZoom:8,maxZoom:19,opacity:workspace.opacity,attribution:index===0?'Contains modified Copernicus Sentinel data (2020, 2026)':''});
+     layer.on('tileerror',()=>setTileError(true));layer.on('load tileload',()=>clipSatelliteLayers());layer.addTo(m);satelliteLayers.current.push(layer);
     });clipSatelliteLayers();
    }
   }
@@ -160,7 +252,40 @@ export default function MapView({zones,selected,analysis,onZone,onDraw,onAskAI,o
   {!workspace&&<div className="zone-status-filters"><button className={layers.existing?'active filter-existing':'filter-existing'} aria-pressed={layers.existing} onClick={()=>setLayers({...layers,existing:!layers.existing})}><Trees size={15}/>{kk?'Бар жасыл аумақтар':'Уже озеленено'}<b>{zones.filter(z=>z.status==='existing_green').length}</b>{layers.existing&&<Check size={12}/>}</button><button className={layers.candidates?'active filter-candidate':'filter-candidate'} aria-pressed={layers.candidates} onClick={()=>setLayers({...layers,candidates:!layers.candidates})}><Sprout size={15}/>{kk?'Отырғызу ұсынысы':'Предлагается посадка'}<b>{zones.filter(z=>z.status!=='existing_green').length}</b>{layers.candidates&&<Check size={12}/>}</button></div>}
   {panel&&<div className="layer-panel">{Object.entries(layers).map(([k,v])=><label key={k}><input type="checkbox" checked={v} onChange={e=>setLayers({...layers,[k]:e.target.checked})}/>{labels[k]}</label>)}<small>{kk?'Контурлар — OSM. Топырақ пен басымдықтар — демо.':'Контуры — OSM. Почвы и приоритеты — демо.'}</small></div>}
   {!workspace&&<div className="map-legend zone-map-legend"><span><i className="legend-existing"/>{kk?'Бар жасыл аумақ':'Озеленено'}</span><span><i className="legend-candidate"/>{kk?'Отырғызу ұсынысы':'Посадка · предложение'}</span>{layers.plantings&&<span><i className="legend-plan"/>{kk?'Жоспар':'План'}</span>}</div>}
-  {workspace?.compare&&satelliteMode&&<><div className="monitoring-swipe-line" style={{left:workspace.swipe+'%'}} aria-hidden="true"><span>↔</span></div><div className="monitoring-swipe-label left">2020</div><div className="monitoring-swipe-label right">2026</div></>}
+   {workspace?.compare&&satelliteMode&&(
+    <div className="monitoring-swipe-container" aria-label={kk?'2020 және 2026 жылдарды салыстыру':'Сравнение 2020 и 2026'}>
+     <div
+      className="monitoring-swipe-line"
+      style={{left:`${localSwipe}%`}}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      onPointerCancel={handlePointerUp}
+      tabIndex={0}
+      role="slider"
+      aria-label={kk?'Салыстыру бөлгіші':'Разделитель сравнения'}
+      aria-valuenow={Math.round(localSwipe)}
+      aria-valuemin={1}
+      aria-valuemax={99}
+      aria-valuetext={`${Math.round(localSwipe)}%`}
+      onKeyDown={handleKeyDown}
+     >
+      <div className="monitoring-swipe-hitarea"/>
+      <div className="monitoring-swipe-handle">
+       <span className="monitoring-swipe-arrows">◀ ▶</span>
+       <span className="monitoring-swipe-pct">{Math.round(localSwipe)}%</span>
+      </div>
+     </div>
+     <div className="monitoring-swipe-label left" aria-hidden="true">
+      <span className="label-year">2020</span>
+      <span className="label-sub">{kk?'Жазғы бақылаулар':'Летние наблюдения'}</span>
+     </div>
+     <div className="monitoring-swipe-label right" aria-hidden="true">
+      <span className="label-year">2026</span>
+      <span className="label-sub">{kk?'Жазғы бақылаулар':'Летние наблюдения'}</span>
+     </div>
+    </div>
+   )}
   {tileError&&satelliteMode&&<div className="map-hint unified-map-warning" role="alert"><Info size={15}/>{kk?'Спутниктік қабаттың бір бөлігі жүктелмеді.':'Часть спутникового слоя не загрузилась.'}<button onClick={()=>{setTileError(false);satelliteLayers.current.forEach(layer=>layer.redraw())}}>{kk?'Қайталау':'Повторить'}</button></div>}
   {editingNow?<div className="map-hint draw-hint">{kk?'Өзгеріс жаңа пайдаланушы контурын жасайды; OSM шекарасы сақталады.':'Изменение создаст новый пользовательский контур; граница OSM сохранится.'}<button onClick={()=>stopEditing(true)}>{kk?'Қолдану':'Применить'}</button><button onClick={()=>stopEditing()}>{kk?'Болдырмау':'Отмена'}</button></div>:drawingNow?<div className="map-hint draw-hint">{kk?'Контур нүктелерін белгілеңіз. Аяқтау үшін бірінші нүктені басыңыз.':'Отметьте границы участка. Нажмите первую точку, чтобы закончить.'}<button onClick={()=>{drawing.current?.disable();setDrawingNow(false)}}>{kk?'Болдырмау':'Отмена'}</button></div>:selectedHidden?<div className="map-hint"><Info size={15}/>{kk?'Таңдалған аумақтың қабаты жасырылған. Таңдау мен жоба параметрлері сақталған.':'Слой выбранного участка скрыт. Выбор и параметры проекта сохранены.'}</div>:!selected&&<div className="map-hint zone-map-hint">{kk?'Аумақты басыңыз → қысқаша мәлімет → AI-дан сұрау':'Нажмите на зону → краткая информация → «Спросить ИИ»'}</div>}
  </div>

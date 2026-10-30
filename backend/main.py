@@ -22,10 +22,18 @@ from .monitoring.api import router as monitoring_router
 async def lifespan(app): init_db();yield
 app=FastAPI(title='EcoLogicDev API',version='1.0.0',lifespan=lifespan,docs_url='/api/docs',openapi_url='/api/openapi.json')
 app.include_router(monitoring_router)
-origins=os.getenv('ALLOWED_ORIGINS','http://127.0.0.1:5173,http://localhost:5173,http://127.0.0.1:4173,http://localhost:4173').split(',')
+origins=[o.strip() for o in os.getenv('ALLOWED_ORIGINS','http://127.0.0.1:5173,http://localhost:5173,http://127.0.0.1:4173,http://localhost:4173,http://127.0.0.1:5174,http://localhost:5174,http://127.0.0.1:5175,http://localhost:5175,http://127.0.0.1:3000,http://localhost:3000').split(',')]
 secure=os.getenv('COOKIE_SECURE','false').lower()=='true'
 production=os.getenv('ENVIRONMENT')=='production'
-app.add_middleware(CORSMiddleware,allow_origins=origins,allow_credentials=True,allow_methods=['GET','POST','PUT','DELETE'],allow_headers=['Content-Type','X-CSRF-Token','Accept-Language'])
+def is_allowed_origin(origin:str|None)->bool:
+ if not origin: return not production
+ if origin in origins: return True
+ if not production:
+  import re
+  if re.match(r'^https?://(localhost|127\.0\.0\.1)(:\d+)?$',origin): return True
+ return False
+
+app.add_middleware(CORSMiddleware,allow_origins=origins,allow_origin_regex=r'^https?://(localhost|127\.0\.0\.1)(:\d+)?$' if not production else None,allow_credentials=True,allow_methods=['GET','POST','PUT','DELETE'],allow_headers=['Content-Type','X-CSRF-Token','Accept-Language'])
 
 @app.exception_handler(StarletteHTTPException)
 async def localized_exception(request,exc):
@@ -46,7 +54,7 @@ async def protection(request,call_next):
  except ValueError: return fail('Неверная длина запроса',400)
  if request.method in ('POST','PUT','PATCH','DELETE'):
   origin=request.headers.get('origin')
-  if origin and origin not in origins: return fail('Недопустимый Origin',403)
+  if origin and not is_allowed_origin(origin): return fail('Недопустимый Origin',403)
   if production and not origin: return fail('Требуется Origin',403)
  response=await call_next(request)
  response.headers['X-Content-Type-Options']='nosniff'

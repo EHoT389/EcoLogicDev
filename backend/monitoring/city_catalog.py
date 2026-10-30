@@ -247,7 +247,7 @@ def build_city_catalog(output_dir=DEFAULT_OUTPUT, boundary_path=DEFAULT_BOUNDARY
 
 def _ensure_crop_once(item, band, boundary, cache_dir=DEFAULT_OUTPUT / 'source-crops'):
     """Cache a raw native-grid GeoTIFF cutout, streamed by block; never a whole scene."""
-    if band not in BANDS:
+    if band not in (*BANDS, 'green', 'blue'):
         raise ValueError('Unsupported source band')
     _safe_scene_id(item.get('id'))
     href = item['assets'][band]['href']; parsed = urlparse(href)
@@ -267,9 +267,13 @@ def _ensure_crop_once(item, band, boundary, cache_dir=DEFAULT_OUTPUT / 'source-c
     target.parent.mkdir(parents=True, exist_ok=True); temporary = target.with_suffix('.partial.tif')
     with rasterio.Env(GDAL_DISABLE_READDIR_ON_OPEN='EMPTY_DIR', CPL_VSIL_CURL_ALLOWED_EXTENSIONS='.tif',
                       GDAL_HTTP_TIMEOUT='60', GDAL_HTTP_CONNECTTIMEOUT='15', GDAL_HTTP_MAX_RETRY='2',
-                      GDAL_HTTP_MULTIRANGE='YES', GDAL_HTTP_MULTIPLEX='YES',
+                      GDAL_HTTP_MULTIRANGE='NO', GDAL_HTTP_MULTIPLEX='NO',
                       VSI_CACHE=True, VSI_CACHE_SIZE=8_000_000, GDAL_CACHEMAX=64):
-        with rasterio.open(href) as source:
+        if band in ('green','blue'):
+            from .range_reader import range_opener
+            open_options={'opener':range_opener}
+        else:open_options={}
+        with rasterio.open(href,**open_options) as source:
             if source.crs is None or source.count != 1:
                 raise ValueError('Invalid source raster')
             expected_resolution = 20 if band == 'scl' else 10
@@ -293,8 +297,8 @@ def _ensure_crop_once(item, band, boundary, cache_dir=DEFAULT_OUTPUT / 'source-c
                 # Wide bounded strips let GDAL coalesce concurrent COG range reads;
                 # writing individual 512x512 destination tiles serializes requests.
                 # At most 1024 rows are resident, never an entire satellite scene.
-                for row in range(0, int(window.height), 1024):
-                    block = Window(0, row, window.width, min(1024, window.height - row))
+                for row in range(0, int(window.height), 256):
+                    block = Window(0, row, window.width, min(256, window.height - row))
                     native = Window(window.col_off, window.row_off + row, block.width, block.height)
                     destination.write(source.read(1, window=native), 1, window=block)
             source_meta = {'source_crs': str(source.crs), 'source_transform': list(source.transform)[:6],

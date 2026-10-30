@@ -49,6 +49,8 @@ class AIModelRouter:
       if used>=cap: break
       log(db,'ai_attempt',actor,{'model':m['id']});db.commit();used+=1
       if language: system+=' Язык ответа: '+('казахский (қазақша). Отвечай полностью на казахском языке.' if language=='kk' else 'русский.')
+      if context.get('response_format')=='six_section_analysis':
+       system+=' Верни только JSON-объект со строками changes, evidence, limits, hypotheses, field_checks, next_steps. По одному краткому абзацу в каждой строке. Числа, даты, проценты, бюджеты, количество растений и ссылки уже показаны отдельными серверными карточками: не повторяй их и не добавляй цифры в текст. Объясняй смысл, ограничения и практические шаги. Все возможные причины называй гипотезами. Не выдавай предложения посадки за разрешение на работы. Используй memory только для продолжения разговора; current_plan и свежие tool_results имеют приоритет.'
       try:
        response=await client.post('https://openrouter.ai/api/v1/chat/completions',headers={'Authorization':'Bearer '+key,'X-Title':'EcoLogicDev'},json={'model':m['id'],'provider':{'max_price':{'prompt':0,'completion':0}},'messages':[{'role':'system','content':system+' Отвечай кратко, до восьми пунктов.'},{'role':'system','content':'Серверный контекст:\n'+json.dumps(context,ensure_ascii=False)[:30000]},{'role':'user','content':message}],'max_tokens':1400,'temperature':.2})
        if response.status_code==429:
@@ -70,13 +72,13 @@ class AIModelRouter:
         continue
        log(db,'ai_success',actor,{'model':m['id'],'tokens':data.get('usage',{}),'free':True});db.commit()
        return {'answer':answer,'model':m['id'],'cloud':True,'remaining':cap-used}
-      except (httpx.HTTPError,KeyError,ValueError) as error:
+      except (httpx.HTTPError,KeyError,ValueError,IndexError,TypeError) as error:
        self.cooldowns[m['id']]=time.time()+60
        status=error.response.status_code if isinstance(error,httpx.HTTPStatusError) else type(error).__name__
        log(db,'ai_error',actor,{'model':m['id'],'status':status});db.commit()
        if status==401: raise HTTPException(503,'OpenRouter отклонил API-ключ. Обновите ключ в серверном окружении; платные модели не используются.')
      raise HTTPException(503,'Бесплатные AI-модели временно недоступны или ограничены. Попробуйте позже; платные модели не используются.')
-   except httpx.HTTPError:
+   except (httpx.HTTPError,KeyError,ValueError,TypeError):
     raise HTTPException(503,'Не удалось получить каталог OpenRouter. Попробуйте позже.')
 
 router=AIModelRouter()

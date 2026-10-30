@@ -1,5 +1,5 @@
 from typing import Literal, Annotated
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, ConfigDict, model_validator
 from .monitoring.ai_tool import VegetationChangeArguments
 
 class Site(BaseModel):
@@ -37,14 +37,45 @@ class Credentials(BaseModel):
  name:str=Field('Пользователь',min_length=1,max_length=80)
 class FirebaseToken(BaseModel):
  token:str=Field(min_length=100,max_length=10000)
+class MapState(BaseModel):
+ model_config=ConfigDict(extra='forbid',allow_inf_nan=False)
+ version:Literal[1]=1
+ zone_id:str|None=Field(None,max_length=80,pattern=r'^[a-zA-Z0-9:_-]+$')
+ mode:Literal['territories','satellite','changes','planning','analysis']='territories'
+ year:Literal['2020','2026']='2026'
+ layer:Literal['vegetation','ndvi','quality','rgb']='vegetation'
+ threshold:float=Field(.3,ge=.1,le=.9)
+ opacity:float=Field(.8,ge=0,le=1)
+ swipe:float=Field(50,ge=0,le=100)
+ compare:bool=False
+ scope:Literal['city','zone']='zone'
+ change_filter:Literal['all','loss','gain']='all'
+ center:tuple[float,float]|None=None
+ zoom:int|None=Field(None,ge=8,le=19)
+ @field_validator('center')
+ @classmethod
+ def valid_center(cls,value):
+  if value is not None and not (-85<=value[0]<=85 and -180<=value[1]<=180): raise ValueError('Invalid map centre')
+  return value
 class ProjectInput(BaseModel):
  name:str=Field(min_length=1,max_length=120)
  payload:AnalysisInput
+ map_state:MapState|None=None
+ @model_validator(mode='after')
+ def matching_zone(self):
+  if self.map_state and self.map_state.zone_id!=self.payload.zone_id: raise ValueError('Map and project zone must match')
+  return self
+class HistoryTurn(BaseModel):
+ model_config=ConfigDict(extra='forbid')
+ role:Literal['user','assistant']
+ text:str=Field(min_length=1,max_length=2000)
 class ChatInput(BaseModel):
  message:str=Field(min_length=1,max_length=1500)
  analysis:AnalysisInput|None=None
  language:Literal['ru','kk']|None=None
  monitoring:VegetationChangeArguments|None=None
+ response_kind:Literal['analysis','question','scenarios']='question'
+ history:list[HistoryTurn]=Field(default_factory=list,max_length=8)
 class RoleInput(BaseModel):
  role:Literal['user','specialist','admin']
  blocked:bool=False

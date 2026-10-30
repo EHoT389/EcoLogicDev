@@ -31,6 +31,7 @@ class Project(Base):
  name:Mapped[str]=mapped_column(String)
  payload:Mapped[str]=mapped_column(Text)
  result:Mapped[str]=mapped_column(Text)
+ map_state:Mapped[str|None]=mapped_column(Text,nullable=True)
  updated:Mapped[str]=mapped_column(String,default=lambda:datetime.now(timezone.utc).isoformat())
 class Setting(Base):
  __tablename__='settings'
@@ -49,6 +50,8 @@ class AIMessage(Base):
  owner_id:Mapped[str]=mapped_column(ForeignKey('users.id'),index=True)
  question:Mapped[str]=mapped_column(Text)
  answer:Mapped[str]=mapped_column(Text)
+ zone_id:Mapped[str|None]=mapped_column(String,nullable=True,index=True)
+ context:Mapped[str]=mapped_column(Text,default='{}')
  created:Mapped[float]=mapped_column(Float,default=time.time)
 
 def init_db():
@@ -56,6 +59,21 @@ def init_db():
  with engine.begin() as c:
   # Small explicit migration ledger; additive migrations live in migrations/.
   from sqlalchemy import text
+  from sqlalchemy import inspect
+  inspector=inspect(c)
+  # Additive, dialect-neutral upgrade: old projects and conversations remain intact.
+  project_columns={column['name'] for column in inspector.get_columns('projects')}
+  message_columns={column['name'] for column in inspector.get_columns('ai_messages')}
+  if 'map_state' not in project_columns: c.execute(text('ALTER TABLE projects ADD COLUMN map_state TEXT'))
+  if 'zone_id' not in message_columns: c.execute(text('ALTER TABLE ai_messages ADD COLUMN zone_id VARCHAR'))
+  if 'context' not in message_columns: c.execute(text("ALTER TABLE ai_messages ADD COLUMN context TEXT NOT NULL DEFAULT '{}'"))
+  c.execute(text('CREATE INDEX IF NOT EXISTS ix_ai_messages_owner_zone ON ai_messages (owner_id, zone_id)'))
+  for row in c.execute(text('SELECT id, question FROM ai_messages WHERE zone_id IS NULL')).mappings():
+   try:
+    stored=json.loads(row['question'])
+    if isinstance(stored,dict) and stored.get('kind')=='zone_message_v1' and stored.get('zone_id'):
+     c.execute(text('UPDATE ai_messages SET zone_id=:zone_id WHERE id=:id'),{'zone_id':stored['zone_id'],'id':row['id']})
+   except (ValueError,TypeError): pass
   c.execute(text('CREATE TABLE IF NOT EXISTS schema_version (version INTEGER PRIMARY KEY)'))
   if not c.execute(text('SELECT version FROM schema_version WHERE version = 1')).first(): c.execute(text('INSERT INTO schema_version (version) VALUES (1)'))
 

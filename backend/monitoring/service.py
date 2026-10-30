@@ -119,13 +119,16 @@ def dataset(): return _load(_signature(data_directory()))
 def metadata(language='ru'):
  data=dataset();manifest=data.get('manifest',{})
  city=manifest.get('scope')=='administrative_city' and not data.get('error')
+ from .rgb_service import info as rgb_info
+ rgb=rgb_info(data_directory(),manifest.get('dataset_id'),data['grid'],manifest['periods']) if city else {'status':'unavailable','reason':'Verified city grid required'}
  reason=None
  if data.get('error'):
   reason=tr('Подготовленные спутниковые данные недоступны. Запустите pipeline и проверьте доступность снимков обоих периодов.','Дайын спутниктік деректер қолжетімсіз. Pipeline іске қосып, екі кезеңнің де суреттерін тексеріңіз.',language)
   if data['error']=='invalid_products': reason=tr('Спутниковые продукты не прошли проверку целостности или общей сетки. Расчёт остановлен.','Спутниктік өнімдердің тұтастығы немесе ортақ торы тексеруден өтпеді. Есеп тоқтатылды.',language)
  return {'status':'unavailable' if data.get('error') else 'ready','reason':reason,'reason_code':data.get('error'),
   'dataset_id':manifest.get('dataset_id'),'version':manifest.get('version'),'scope':'administrative_city' if city else 'pavlodar_centre','bbox_wgs84':manifest.get('bbox_wgs84'),
-  'available_layers':['vegetation','ndvi','quality'] if not data.get('error') else [],
+  'available_layers':(['vegetation','ndvi','quality']+(['rgb'] if rgb['status']=='ready' else [])) if not data.get('error') else [],
+  'rgb':{key:value for key,value in rgb.items() if key!='paths'},
   'aoi':manifest.get('aoi') if city else None,'coverage':manifest.get('coverage') if city else None,
   'resolution_m':10,'min_observations':2,'created_at':manifest.get('created_at'),
   'periods':manifest.get('periods',{str(y):{'start':f'{y}-06-01','end':f'{y}-08-31','scenes':[]} for y in YEARS}),
@@ -258,6 +261,23 @@ def rgba_changes(classes):
  for code,color in [(0,(138,145,143,190)),(1,(35,142,74,230)),(2,(198,64,55,230))]: out[classes==code]=color
  return out
 
+def zone_ranking(threshold=.3,language='ru'):
+ threshold=check_threshold(threshold);rows=[]
+ for zone in ZONES:
+  result=get_vegetation_change(zone['id'],threshold=threshold,language=language)
+  stats=result['statistics'];area=stats.get('comparable_area_ha');loss=stats.get('loss_ha');fraction=stats.get('comparable_fraction')
+  rate=loss/area if result['status']=='ready' and area and loss is not None else None
+  reliable=rate is not None and fraction is not None and fraction>=.8 and stats.get('comparable_pixels',0)>=30
+  priority='data_check' if not reliable else 'high' if rate>=.10 else 'normal' if rate>0 else 'observe'
+  rows.append({'zone_id':zone['id'],'ru':zone['ru'],'kk':zone['kk'],'status':result['status'],
+               'loss_ha':loss,'loss_fraction':rate,'net_change_ha':stats.get('net_change_ha'),
+               'comparable_fraction':fraction,'comparable_area_ha':area,'comparable_pixels':stats.get('comparable_pixels'),
+               'survey_priority':priority})
+ rows.sort(key=lambda row:(row['loss_fraction'] is not None,row['loss_fraction'] or 0,row['loss_ha'] or 0),reverse=True)
+ return {'dataset_id':metadata(language).get('dataset_id'),'threshold':threshold,'rows':rows,'data_type':'observed_satellite',
+         'method':tr('Потери / общая сопоставимая площадь. Очередь обследования — прозрачная эвристика: >=10% потерь при >=80% пригодных пикселей и >=30 сопоставимых ячеек — высокая; при недостатке данных сначала проверка качества. Это не диагноз деградации и не индекс планировщика.',
+                     'Жоғалу / ортақ салыстырылатын аудан. Тексеру кезегі — ашық эвристика: жарамды пиксельдер >=80%, ортақ ұяшықтар >=30 және жоғалу >=10% болса — жоғары; дерек жеткіліксіз болса алдымен сапа тексеріледі. Бұл деградация диагнозы не жоспарлаушы индексі емес.',language)}
+
 def change_map_png(zone_id=None,threshold=.3):
  data=dataset()
  if data.get('error'): raise HTTPException(409,'Satellite products unavailable')
@@ -278,7 +298,7 @@ def change_map_png(zone_id=None,threshold=.3):
  image.thumbnail((1200,850),Image.Resampling.NEAREST)
  output=BytesIO();image.save(output,format='PNG');return output.getvalue()
 
-def _render(data,year,affine,crs,width,height,threshold,layer,region=None):
+def _render(data,year,affine,crs,width,height,threshold,layer,region=None,change_filter='all'):
  """Read only this output window. GDAL is limited to 16 MiB warp workspaces."""
  arrays={}
  for name,path in data['paths'].items():
@@ -294,9 +314,23 @@ def _render(data,year,affine,crs,width,height,threshold,layer,region=None):
  mask=geometry_mask([mapping(selected)],out_shape=(height,width),transform=affine,invert=True,all_touched=False)
  from .core import comparison_mask,classify_changes
  common=comparison_mask(arrays['ndvi_2020'],arrays['ndvi_2026'],arrays['count_2020'],arrays['count_2026'])&mask
- if year=='changes':return rgba_changes(classify_changes(arrays['ndvi_2020'],arrays['ndvi_2026'],threshold,common))
+ if year=='changes':
+  classes=classify_changes(arrays['ndvi_2020'],arrays['ndvi_2026'],threshold,common)
+  if change_filter!='all':classes[classes!=(2 if change_filter=='loss' else 1)]=255
+  return rgba_changes(classes)
  output=np.zeros((height,width,4),dtype='uint8')
- if layer=='quality':
+ if layer=='rgb':
+  from .rgb_service import info as rgb_info
+  rgb=rgb_info(data_directory(),data['manifest']['dataset_id'],data['grid'],data['manifest']['periods'])
+  if rgb['status']!='ready':raise HTTPException(409,'RGB products unavailable')
+  colours={}
+  for period,path in rgb['paths'].items():
+   with rasterio.open(path) as source, WarpedVRT(source,crs=crs,transform=affine,width=width,height=height,resampling=Resampling.nearest,warp_mem_limit=16,src_nodata=0,nodata=0) as view:
+    colours[period]=view.read()
+  valid=common&(colours['2020']>0).all(axis=0)&(colours['2026']>0).all(axis=0)
+  output[:,:,:3]=np.moveaxis(colours[year],0,-1)
+  output[:,:,3]=np.where(valid,255,0)
+ elif layer=='quality':
   count=np.minimum(arrays['count_2020'],arrays['count_2026'])
   # These colours denote the number of actual observations, not a modelled probability.
   output[mask&(count<2)]=(138,145,143,190)
@@ -313,18 +347,20 @@ def _render(data,year,affine,crs,width,height,threshold,layer,region=None):
  return output
 
 @lru_cache(maxsize=64)
-def _tile(signature,year,z,x,y,threshold,layer='vegetation'):
+def _tile(signature,year,z,x,y,threshold,layer='vegetation',rgb_signature=None,change_filter='all'):
  data=_load(signature)
  if data.get('error'): raise HTTPException(503,'Satellite products unavailable')
  size=40075016.68557849/(2**z);left=-20037508.342789244+x*size;top=20037508.342789244-y*size
  tile_bounds=box(left,top-size,left+size,top)
  native_bounds=box(*transform_bounds(data['grid'][2],'EPSG:3857',*rasterio.transform.array_bounds(data['grid'][1],data['grid'][0],data['grid'][3])))
  if not tile_bounds.intersects(native_bounds):rgba=np.zeros((256,256,4),dtype='uint8')
- else:rgba=_render(data,year,from_bounds(left,top-size,left+size,top,256,256),'EPSG:3857',256,256,threshold,layer)
+ else:rgba=_render(data,year,from_bounds(left,top-size,left+size,top,256,256),'EPSG:3857',256,256,threshold,layer,change_filter=change_filter)
  output=BytesIO();Image.fromarray(rgba).save(output,format='PNG');return output.getvalue()
 
-def tile_png(year,z,x,y,threshold=.3,layer='vegetation'):
+def tile_png(year,z,x,y,threshold=.3,layer='vegetation',change_filter='all'):
  if year not in ('2020','2026','changes') or not 8<=z<=19 or not (0<=x<2**z and 0<=y<2**z): raise HTTPException(422,'Invalid tile coordinates or period')
- if layer not in ('vegetation','ndvi','quality'):raise HTTPException(422,'Invalid satellite layer')
+ if layer not in ('vegetation','ndvi','quality','rgb'):raise HTTPException(422,'Invalid satellite layer')
+ if change_filter not in ('all','loss','gain'):raise HTTPException(422,'Invalid changes filter')
  check_threshold(threshold)
- return _tile(_signature(data_directory()),year,z,x,y,threshold,layer)
+ from .rgb_service import signature as rgb_signature
+ return _tile(_signature(data_directory()),year,z,x,y,threshold,layer,rgb_signature(data_directory()) if layer=='rgb' else None,change_filter)

@@ -17,13 +17,17 @@ def metadata(request:Request): return service.metadata(language(request))
 def changes(request:Request,threshold:float=Query(.3,ge=.1,le=.9)):
  return service.get_vegetation_change(threshold=threshold,language=language(request))
 
+@router.get('/ranking')
+def ranking(request:Request,threshold:float=Query(.3,ge=.1,le=.9)):
+ return service.zone_ranking(threshold,language(request))
+
 @router.get('/zones/{zone_id}')
 def zone_changes(zone_id:str,request:Request,threshold:float=Query(.3,ge=.1,le=.9)):
  return service.get_vegetation_change(zone_id,threshold=threshold,language=language(request))
 
 @router.get('/tiles/{year}/{z}/{x}/{y}')
-def tiles(year:str,z:int,x:int,y:int,threshold:float=Query(.3,ge=.1,le=.9),layer:str=Query('vegetation',pattern='^(vegetation|ndvi|quality)$')):
- data=service.tile_png(year,z,x,y,threshold,layer)
+def tiles(year:str,z:int,x:int,y:int,threshold:float=Query(.3,ge=.1,le=.9),layer:str=Query('vegetation',pattern='^(vegetation|ndvi|quality|rgb)$'),change_filter:str=Query('all',pattern='^(all|loss|gain)$')):
+ data=service.tile_png(year,z,x,y,threshold,layer,change_filter)
  return Response(data,media_type='image/png',headers={'Cache-Control':'public, max-age=300','X-Content-Type-Options':'nosniff'})
 
 @router.get('/export')

@@ -9,7 +9,7 @@ import {statusLabel,zoneAddress} from './zoneModel';
 import {API} from './api';
 import type {UnifiedMapState,UnifiedMonitoringMetadata} from './unifiedMapModel';
 
-export type MapViewProps={zones:Zone[];selected:Geometry|null;analysis:Analysis|null;onZone:(z:Zone)=>void;onDraw:(g:Geometry)=>void;onAskAI:(z:Zone)=>void;onRename:(z:Zone)=>void;kk:boolean;expanded?:boolean;imported?:any[];showPlantings?:boolean;workspace?:UnifiedMapState&{metadata?:UnifiedMonitoringMetadata;onAnalyze?:(zone:Zone)=>void;onSwipe?:(swipe:number)=>void}};
+export type MapViewProps={zones:Zone[];selected:Geometry|null;analysis:Analysis|null;onZone:(z:Zone)=>void;onDraw:(g:Geometry)=>void;onAskAI:(z:Zone)=>void;onRename:(z:Zone)=>void;kk:boolean;expanded?:boolean;imported?:any[];showPlantings?:boolean;workspace?:UnifiedMapState&{active?:boolean;metadata?:UnifiedMonitoringMetadata;onAnalyze?:(zone:Zone)=>void;onSwipe?:(swipe:number)=>void;onViewport?:(lat:number,lon:number,zoom:number)=>void}};
 export default function MapView({zones,selected,analysis,onZone,onDraw,onAskAI,onRename,kk,expanded,imported=[],showPlantings=false,workspace}:MapViewProps){
  const node=useRef<HTMLDivElement>(null),map=useRef<L.Map|null>(null),drawing=useRef<any>(null);
  const satelliteLayers=useRef<L.TileLayer[]>([]),editable=useRef<L.FeatureGroup|null>(null),workspaceRef=useRef(workspace);workspaceRef.current=workspace;
@@ -18,6 +18,7 @@ export default function MapView({zones,selected,analysis,onZone,onDraw,onAskAI,o
  const [layers,setLayers]=useState({existing:true,candidates:true,soil:false,priority:false,plantings:showPlantings,imported:true});
  const [panel,setPanel]=useState(false),[query,setQuery]=useState(''),[searching,setSearching]=useState(false),[searchError,setSearchError]=useState(''),[labelsVisible,setLabelsVisible]=useState(false),[drawingNow,setDrawingNow]=useState(false),[editingNow,setEditingNow]=useState(false),[tileError,setTileError]=useState(false);
  const lastSearch=useRef(0);
+ const viewportTimer=useRef<number|undefined>(undefined),lastViewport=useRef('');
  const satelliteMode=workspace?.mode==='satellite'||workspace?.mode==='changes';
  const initialSwipe=workspace?.swipe??50;
  const [localSwipe,setLocalSwipe]=useState(initialSwipe);
@@ -137,8 +138,17 @@ export default function MapView({zones,selected,analysis,onZone,onDraw,onAskAI,o
   m.on('draw:drawstop',()=>setDrawingNow(false));
   m.on('zoomend',()=>setLabelsVisible(m.getZoom()>=15));setLabelsVisible(m.getZoom()>=15);
   m.on('popupclose',()=>{popup.current=null;popupZone.current=null});
+  m.on('moveend',()=>{
+   window.clearTimeout(viewportTimer.current);
+   viewportTimer.current=window.setTimeout(()=>{
+    const config=workspaceRef.current;if(!config||config.active===false||!node.current?.clientWidth)return;
+    const center=m.getCenter(),lat=Number(center.lat.toFixed(6)),lon=Number(center.lng.toFixed(6)),zoom=m.getZoom();
+    const key=[lat,lon,zoom].join(',');if(key===lastViewport.current)return;lastViewport.current=key;
+    config.onViewport?.(lat,lon,zoom);
+   },200);
+  });
   const resize=new ResizeObserver(()=>{m.invalidateSize();clipSatelliteLayers()});resize.observe(node.current);
-  return()=>{resize.disconnect();m.remove();map.current=null};
+  return()=>{window.clearTimeout(viewportTimer.current);resize.disconnect();m.remove();map.current=null};
  },[]);
  useEffect(()=>{
   const m=map.current;if(!m)return;
@@ -150,21 +160,28 @@ export default function MapView({zones,selected,analysis,onZone,onDraw,onAskAI,o
    if(supported){
     const years=workspace.compare?['2020','2026']:[workspace.mode==='changes'?'changes':workspace.year];
     years.forEach((year,index)=>{
-     const params=new URLSearchParams({threshold:String(workspace.threshold),v:metadata.dataset_id||metadata.version||'',layer:workspace.mode==='changes'&&!workspace.compare?'vegetation':kind});
+     const params=new URLSearchParams({threshold:String(workspace.threshold),v:kind==='rgb'?metadata.rgb?.dataset_id||metadata.dataset_id||'':metadata.dataset_id||metadata.version||'',layer:workspace.mode==='changes'&&!workspace.compare?'vegetation':kind,change_filter:workspace.change_filter});
      const layer=L.tileLayer(`${API}/api/monitoring/tiles/${year}/{z}/{x}/{y}?${params}`,{minZoom:8,maxZoom:19,opacity:workspace.opacity,attribution:index===0?'Contains modified Copernicus Sentinel data (2020, 2026)':''});
      layer.on('tileerror',()=>setTileError(true));layer.on('load tileload',()=>clipSatelliteLayers());layer.addTo(m);satelliteLayers.current.push(layer);
     });clipSatelliteLayers();
    }
   }
   return()=>{satelliteLayers.current.forEach(layer=>layer.remove());satelliteLayers.current=[]};
- },[satelliteMode,workspace?.mode,workspace?.year,workspace?.layer,workspace?.compare,workspace?.threshold,workspace?.metadata?.status,workspace?.metadata?.dataset_id,workspace?.metadata?.version,workspace?.metadata?.available_layers?.join(',')]);
+ },[satelliteMode,workspace?.mode,workspace?.year,workspace?.layer,workspace?.compare,workspace?.threshold,workspace?.change_filter,workspace?.metadata?.status,workspace?.metadata?.dataset_id,workspace?.metadata?.version,workspace?.metadata?.rgb?.dataset_id,workspace?.metadata?.available_layers?.join(',')]);
  useEffect(()=>{satelliteLayers.current.forEach(layer=>layer.setOpacity(workspace?.opacity??.8));clipSatelliteLayers()},[workspace?.opacity,workspace?.swipe]);
  useEffect(()=>{
-  if(workspace?.scope!=='city'||!map.current)return;
+  if(!workspace||workspace.active===false||!map.current||workspace.lat!=null&&workspace.lon!=null)return;
   const metadata=workspace.metadata;
-  if(metadata?.aoi?.geometry)map.current.fitBounds(L.geoJSON(metadata.aoi.geometry as any).getBounds(),{padding:[35,65],animate:false});
-  else if(metadata?.bbox_wgs84){const [west,south,east,north]=metadata.bbox_wgs84;map.current.fitBounds([[south,west],[north,east]],{padding:[35,65],animate:false})}
- },[workspace?.scope,workspace?.metadata?.dataset_id]);
+  if(workspace.scope==='city'){
+   if(metadata?.aoi?.geometry)map.current.fitBounds(L.geoJSON(metadata.aoi.geometry as any).getBounds(),{padding:[35,65],animate:false});
+   else if(metadata?.bbox_wgs84){const [west,south,east,north]=metadata.bbox_wgs84;map.current.fitBounds([[south,west],[north,east]],{padding:[35,65],animate:false})}
+  }else if(selected&&!popup.current)map.current.fitBounds(L.geoJSON(selected as any).getBounds(),{padding:[55,85],maxZoom:16,animate:false});
+ },[workspace?.scope,workspace?.active,workspace?.metadata?.dataset_id,workspace?.lat==null,workspace?.lon==null,selected]);
+ useEffect(()=>{
+  const m=map.current;if(!m||workspace?.active===false||workspace?.lat==null||workspace.lon==null||workspace.zoom==null)return;
+  const center=m.getCenter();
+  if(Math.abs(center.lat-workspace.lat)>1e-5||Math.abs(center.lng-workspace.lon)>1e-5||m.getZoom()!==workspace.zoom)m.setView([workspace.lat,workspace.lon],workspace.zoom,{animate:false});
+ },[workspace?.lat,workspace?.lon,workspace?.zoom,workspace?.active]);
  useEffect(()=>{if(workspace)setLayers(previous=>({...previous,plantings:workspace.mode==='planning',priority:workspace.mode==='analysis'}))},[workspace?.mode]);
  useEffect(()=>{
   const m=map.current,metadata=workspace?.metadata;if(!m||!metadata)return;
@@ -216,7 +233,7 @@ export default function MapView({zones,selected,analysis,onZone,onDraw,onAskAI,o
   if(popup.current&&popupZone.current){const z=zones.find(z=>z.id===popupZone.current);if(z)popup.current.setContent(content(z));popup.current.getElement()?.querySelector('.leaflet-popup-close-button')?.setAttribute('aria-label',kk?'Жабу':'Закрыть')}
   return()=>{group.remove()};
  },[zones,selected,analysis,layers,kk,imported,labelsVisible,satelliteMode,editingNow]);
- useEffect(()=>{if(selected&&map.current&&!popup.current){map.current.fitBounds(L.geoJSON(selected as any).getBounds(),{padding:[65,100],maxZoom:16,animate:false})}},[selected]);
+ useEffect(()=>{if(!workspace&&selected&&map.current&&!popup.current){map.current.fitBounds(L.geoJSON(selected as any).getBounds(),{padding:[65,100],maxZoom:16,animate:false})}},[selected]);
  async function search(event:React.FormEvent){
   event.preventDefault();if(query.trim().length<3||searching)return;setSearchError('');
   const text=query.trim().toLocaleLowerCase(),exact=zones.find(z=>z.ru.toLocaleLowerCase()===text||z.kk.toLocaleLowerCase()===text);

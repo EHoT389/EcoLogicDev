@@ -120,13 +120,46 @@ def chat_context(payload,db):
  result=calculation(payload,db)
  # Keep actual numbers and explicit selected-zone metadata; exclude schematic point arrays.
  return {key:result[key] for key in ['selected_zone','version','area','plantable_area','plan','total_plants','estimate','survival','ecology','warnings','risks']}|{'recommendations':[{k:p[k] for k in ['id','ru','kk','score','excluded','reasons','safety','source']} for p in result['recommendations']],'note':'Статус кандидата не доказывает необходимость посадки. Существующие насаждения нужно сохранять; количество реально растущих деревьев неизвестно.'}
+
+def prepare_decision(payload,db,user_id,lang):
+ from .scenarios import compare_scenarios
+ from .decision import history_rows,memory_context,bounded_context
+ from .monitoring.ai_tool import get_vegetation_change,VegetationChangeArguments
+ original=chat_context(payload.analysis,db)
+ selected=original['selected_zone'];zone_id=selected.get('id')
+ arguments=payload.monitoring or (VegetationChangeArguments(zone_id=zone_id) if zone_id else None)
+ tool=None
+ if arguments:
+  try: tool=get_vegetation_change(arguments,selected,lang)
+  except HTTPException as error:
+   if error.status_code!=404: raise
+   tool={'name':'get_vegetation_change','arguments':arguments.model_dump(),'result':{'status':'unavailable','reason':'Пользовательский контур пока не имеет подготовленных спутниковых показателей.','zone_id':zone_id,'threshold':arguments.threshold,'statistics':None}}
+ comparison=compare_scenarios(payload.analysis.model_dump(),catalog(db),get_setting(db,'rates',RATES),get_setting(db,'coefficients',COEFFICIENTS))
+ plan=comparison['scenarios'][0]
+ # Authenticated history always comes from the server, ignoring supplied turns.
+ memory=memory_context(history_rows(db,user_id,zone_id),[] if user_id else payload.history,comparison['plan_version'])
+ context={'selected_zone':selected,'topic':'vegetation_change' if payload.monitoring else 'planning',
+          'tool_results':[tool] if tool else [],'current_plan':plan,'plan_version':comparison['plan_version'],
+          'recommendations':original['recommendations'][:6],'scenarios':comparison,
+          'planning_scenario':{'provenance':'expert_scenario_not_observed_state','new_plants_proposed':plan['total_plants'],'risks':plan['risks']},
+          'memory':memory,'response_format':'six_section_analysis' if payload.response_kind=='analysis' else 'short_explanation'}
+ return bounded_context(context),tool,plan,comparison
+
+def store_decision(db,user,payload,selected,plan,comparison,result):
+ if not user:return
+ question=json.dumps({'kind':'zone_message_v1','text':payload.message,'zone_id':selected.get('id'),'zone_name':selected.get('name')},ensure_ascii=False)
+ stored={'schema':'decision-v1','plan_version':comparison['plan_version'],'plan_summary':plan,
+           'scenarios':comparison,'response_kind':result.get('response_kind',payload.response_kind),'automatic_summary':result['automatic_summary'],
+         'model':result.get('model'),'evidence':result['evidence'],'sections':result['sections'],
+         'previous_plan_delta':result.get('previous_plan_delta')}
+ db.add(AIMessage(owner_id=user.id,zone_id=selected.get('id'),question=question,answer=result['answer'],context=json.dumps(stored,ensure_ascii=False)));db.commit()
 def own_project(id,u,db,write=False):
  p=db.get(Project,id)
  if not p or (p.owner_id!=u.id and not (u.role=='specialist' and p.assigned_to==u.id)): raise HTTPException(404,'Проект не найден')
  return p
 def project_view(p,full=False):
  result={'id':p.id,'name':p.name,'updated':p.updated,'total':json.loads(p.result)['estimate']['total'],'owner_id':p.owner_id,'assigned_to':p.assigned_to}
- if full: result.update(payload=json.loads(p.payload),result=json.loads(p.result))
+ if full: result.update(payload=json.loads(p.payload),result=json.loads(p.result),map_state=json.loads(p.map_state) if p.map_state else None)
  return result
 
 @app.get('/api/health')
@@ -155,6 +188,12 @@ def analysis(payload:AnalysisInput,request:Request,db:DB=Depends(get_db)):
  return calculation(payload,db)
 @app.post('/api/recommendations')
 def recommendations(payload:AnalysisInput,db:DB=Depends(get_db)): return calculation(payload,db)['recommendations']
+@app.post('/api/scenarios')
+def scenarios(payload:AnalysisInput,request:Request,db:DB=Depends(get_db)):
+ from .scenarios import compare_scenarios
+ selected_zone_context(payload,db)
+ throttle(request,db,'scenarios',45,60)
+ return compare_scenarios(payload.model_dump(),catalog(db),get_setting(db,'rates',RATES),get_setting(db,'coefficients',COEFFICIENTS))
 @app.post('/api/estimates')
 def estimates(payload:AnalysisInput,db:DB=Depends(get_db)): return calculation(payload,db)['estimate']
 @app.post('/api/survival')
@@ -213,15 +252,17 @@ def projects(u=Depends(required),db:DB=Depends(get_db)):
 @app.post('/api/projects')
 def save_project(payload:ProjectInput,u=Depends(required),db:DB=Depends(get_db)):
  result=calculation(payload.payload,db)
- p=Project(owner_id=u.id,name=payload.name,payload=payload.payload.model_dump_json(),result=json.dumps(result,ensure_ascii=False));db.add(p);db.commit();return project_view(p,True)
+ p=Project(owner_id=u.id,name=payload.name,payload=payload.payload.model_dump_json(),result=json.dumps(result,ensure_ascii=False),map_state=payload.map_state.model_dump_json() if payload.map_state else None);db.add(p);db.commit();return project_view(p,True)
 @app.get('/api/projects/{id}')
 def get_project(id:str,u=Depends(required),db:DB=Depends(get_db)): return project_view(own_project(id,u,db),True)
 @app.put('/api/projects/{id}')
 def update_project(id:str,payload:ProjectInput,u=Depends(required),db:DB=Depends(get_db)):
  p=own_project(id,u,db);result=calculation(payload.payload,db)
  # Previous version retained for reproducibility.
- log(db,'project_version',u.id,{'project_id':id,'payload':json.loads(p.payload),'result':json.loads(p.result)})
- p.name=payload.name;p.payload=payload.payload.model_dump_json();p.result=json.dumps(result,ensure_ascii=False);p.updated=datetime.now(timezone.utc).isoformat();db.commit();return project_view(p,True)
+ log(db,'project_version',u.id,{'project_id':id,'payload':json.loads(p.payload),'result':json.loads(p.result),'map_state':json.loads(p.map_state) if p.map_state else None})
+ p.name=payload.name;p.payload=payload.payload.model_dump_json();p.result=json.dumps(result,ensure_ascii=False)
+ if payload.map_state is not None: p.map_state=payload.map_state.model_dump_json()
+ p.updated=datetime.now(timezone.utc).isoformat();db.commit();return project_view(p,True)
 @app.delete('/api/projects/{id}')
 def remove_project(id:str,u=Depends(required),db:DB=Depends(get_db)):
  p=own_project(id,u,db)
@@ -242,34 +283,55 @@ def report(id:str,format:str,request:Request,u=Depends(required),db:DB=Depends(g
  return Response(data,media_type=mime,headers={'Content-Disposition':f'attachment; filename="EcoLogicDev-{id}.{format}"'})
 @app.post('/api/ai/chat')
 async def chat(payload:ChatInput,request:Request,u=Depends(session_user),db:DB=Depends(get_db)):
- actor=throttle(request,db,'chat',12 if u else 4,3600)
- context=chat_context(payload.analysis,db) if payload.analysis else {'zones':assess_zones(get_setting(db,'zones',ZONES)),'plants':catalog(db),'note':'Участок не выбран. Для сметы выберите участок.'}
- if payload.monitoring:
-  from .monitoring.ai_tool import get_vegetation_change
-  lang=payload.language or language(request)
-  if not payload.analysis:
-   raise HTTPException(422,'Для спутникового анализа выберите зону на карте.' if lang!='kk' else 'Спутниктік талдау үшін картадан аумақты таңдаңыз.')
-  # chat_context already verifies ID against the canonical geometry before this tool runs.
-  tool_result=get_vegetation_change(payload.monitoring,context['selected_zone'],lang)
-  # Keep the satellite evidence first and small enough for every free model's context.
-  # Planning quantities are a hypothetical scenario, never an inventory of existing trees.
-  context={'selected_zone':context['selected_zone'],'topic':'vegetation_change','tool_results':[tool_result],
-   'planning_scenario':{'provenance':'expert_scenario_not_observed_state','new_plants_proposed':context['total_plants'],'risks':context['risks']}}
- result=await router.chat(payload.message,context,db,u.id if u else actor,language=payload.language or language(request))
- if u:
-  selected=context.get('selected_zone',{})
-  question=json.dumps({'kind':'zone_message_v1','text':payload.message,'zone_id':selected.get('id'),'zone_name':selected.get('name')},ensure_ascii=False)
-  db.add(AIMessage(owner_id=u.id,question=question,answer=result['answer']));db.commit()
+ lang=payload.language or language(request)
+ if payload.monitoring and not payload.analysis: raise HTTPException(422,'Для спутникового анализа выберите зону на карте.' if lang!='kk' else 'Спутниктік талдау үшін картадан аумақты таңдаңыз.')
+ if not payload.analysis:
+  actor=throttle(request,db,'chat',12 if u else 4,3600)
+  return await router.chat(payload.message,{'note':'Участок не выбран. Для анализа выберите участок.'},db,u.id if u else actor,language=lang)
+ context,tool,plan,comparison=prepare_decision(payload,db,u.id if u else None,lang)
+ from .decision import decision_response
+ reason=None;retry_after=None;cloud_result=None
+ try:
+  actor=throttle(request,db,'chat',12 if u else 4,3600)
+  cloud_result=await router.chat(payload.message,context,db,u.id if u else actor,language=lang)
+ except HTTPException as error:
+  if error.status_code not in (429,502,503,504):raise
+  reason=text(error.detail,lang);retry_after=(error.headers or {}).get('Retry-After')
+ result=decision_response(cloud_result,tool,plan,comparison,lang,payload.response_kind,reason)
+ previous=context.get('memory',{}).get('previous_plan')
+ if previous and previous.get('plan_summary'):
+  prior=previous['plan_summary']
+  result['previous_plan_delta']={key:plan[key]-prior[key] for key in ('total_plants','total_cost')}
+  result['previous_plan_delta']['survival']=[round(a-b,1) if a is not None and b is not None else None for a,b in zip(plan['survival'],prior.get('survival',[None]*3))]
+ if retry_after:result['retry_after']=retry_after
+ store_decision(db,u,payload,context.get('selected_zone',{}),plan,comparison,result)
+ return result
+
+@app.post('/api/ai/summary')
+def automatic_summary(payload:ChatInput,request:Request,u=Depends(session_user),db:DB=Depends(get_db)):
+ if not payload.analysis:raise HTTPException(422,'Сначала выберите участок.')
+ throttle(request,db,'automatic_summary',60,60)
+ lang=payload.language or language(request)
+ context,tool,plan,comparison=prepare_decision(payload,db,u.id if u else None,lang)
+ from .decision import decision_response
+ result=decision_response(None,tool,plan,comparison,lang,'analysis')
+ store_decision(db,u,payload,context.get('selected_zone',{}),plan,comparison,result)
  return result
 @app.get('/api/ai/history')
 def ai_history(zone_id:str|None=None,u=Depends(required),db:DB=Depends(get_db)):
  messages=[]
- for m in db.scalars(select(AIMessage).where(AIMessage.owner_id==u.id).order_by(AIMessage.created.desc()).limit(200)).all():
+ query=select(AIMessage).where(AIMessage.owner_id==u.id)
+ if zone_id:query=query.where(AIMessage.zone_id==zone_id)
+ for m in db.scalars(query.order_by(AIMessage.created.desc()).limit(50)).all():
   try: stored=json.loads(m.question)
   except (ValueError,TypeError): stored=None
   if not isinstance(stored,dict) or stored.get('kind')!='zone_message_v1': stored={'text':m.question,'zone_id':None,'zone_name':None}
   if zone_id and stored.get('zone_id')!=zone_id: continue
-  messages.append({'question':stored['text'],'answer':m.answer,'created':m.created,'zone_id':stored.get('zone_id'),'zone_name':stored.get('zone_name')})
+  try:metadata=json.loads(m.context or '{}')
+  except (ValueError,TypeError):metadata={}
+  messages.append({'question':stored['text'],'answer':m.answer,'created':m.created,'zone_id':stored.get('zone_id'),'zone_name':stored.get('zone_name'),
+                   'plan_version':metadata.get('plan_version'),'automatic_summary':metadata.get('automatic_summary',False),'model':metadata.get('model'),
+                   'sections':metadata.get('sections'),'evidence':metadata.get('evidence'),'scenarios':metadata.get('scenarios'),'response_kind':metadata.get('response_kind','question'),'previous_plan_delta':metadata.get('previous_plan_delta')})
  return messages[:50]
 
 @app.get('/api/admin')

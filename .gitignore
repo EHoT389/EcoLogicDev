@@ -1,5 +1,4 @@
 node_modules/
-dist/
 .venv/
 __pycache__/
 .pytest_cache/
@@ -7,9 +6,9 @@ __pycache__/
 .env
 .env.*
 !.env.example
-*.db
 *.db-*
-backend/storage/
+backend/storage/monitoring/*/
+backend/storage/monitoring-city/*/
 *.log
 output/qa/
 .openai/sites.local.json

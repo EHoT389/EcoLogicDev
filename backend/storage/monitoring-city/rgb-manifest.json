@@ -1,0 +1,78 @@
+{
+  "status": "ready",
+  "dataset_id": "5e2aec9fc8c0da9d023d44fb",
+  "source_dataset_id": "e7fe2d743524bc7318e04c06",
+  "processing_code_sha256": "7632575736706ce5e2f3e7e80f7b493ffc680e55b9546da580dbf5c5af79f0aa",
+  "crs": "EPSG:32643",
+  "resolution_m": 10,
+  "width": 4152,
+  "height": 4039,
+  "transform": [
+    10.0,
+    0.0,
+    610340.0,
+    0.0,
+    -10.0,
+    5816180.0
+  ],
+  "bands": [
+    "B04",
+    "B03",
+    "B02"
+  ],
+  "min_observations": 2,
+  "method": "Per-acquisition SCL 4/5/6 mask, mosaic adjacent tiles once, seasonal per-channel median reflectance; fixed display stretch 0..0.30, gamma 2.2. NoData retained.",
+  "periods": {
+    "2020": {
+      "start": "2020-06-01",
+      "end": "2020-08-31",
+      "scene_ids": [
+        "S2A_43UFT_20200615_1_L2A",
+        "S2A_43UFU_20200622_1_L2A",
+        "S2A_43UFU_20200625_1_L2A",
+        "S2B_43UFT_20200630_1_L2A",
+        "S2A_43UFU_20200715_1_L2A",
+        "S2B_43UFU_20200717_1_L2A",
+        "S2B_43UFT_20200720_1_L2A",
+        "S2A_43UFT_20200725_1_L2A",
+        "S2A_43UFU_20200801_1_L2A",
+        "S2A_43UFT_20200801_1_L2A",
+        "S2A_43UFU_20200831_1_L2A",
+        "S2A_43UFT_20200831_1_L2A"
+      ]
+    },
+    "2026": {
+      "start": "2026-06-01",
+      "end": "2026-08-31",
+      "scene_ids": [
+        "S2A_43UFU_20260603_1_L2A",
+        "S2A_43UFT_20260603_1_L2A",
+        "S2C_43UFU_20260621_0_L2A",
+        "S2C_43UFT_20260621_0_L2A",
+        "S2B_43UFU_20260709_0_L2A",
+        "S2B_43UFT_20260709_0_L2A",
+        "S2C_43UFU_20260714_0_L2A",
+        "S2C_43UFT_20260714_0_L2A",
+        "S2C_43UFU_20260810_0_L2A",
+        "S2C_43UFT_20260810_0_L2A",
+        "S2C_43UFU_20260813_0_L2A",
+        "S2C_43UFT_20260813_0_L2A"
+      ]
+    }
+  },
+  "created_at": "2026-10-31T20:46:57.190631+00:00",
+  "artifacts": {
+    "rgb_2020.tif": {
+      "sha256": "aa057b2b47dbc825f32eb060ffe8f95b37a3303f519f02978b2777d4bc4ed855",
+      "bytes": 17576177
+    },
+    "rgb_2026.tif": {
+      "sha256": "620e0e4ad55c4c5b24486ee55d8f871b6c030baef46b3b241d5658bab47e1d6b",
+      "bytes": 17726511
+    }
+  },
+  "usable_pixels": {
+    "2020": 6293096,
+    "2026": 6290577
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "status": "ready",
+  "threshold": 0.3,
+  "pixel_area_m2": 100,
+  "total_pixels": 6303776,
+  "comparable_pixels": 6284713,
+  "comparable_fraction": 0.9969759395003883,
+  "comparable_area_ha": 62847.130000000005,
+  "vegetation_2020_ha": 25113.03,
+  "vegetation_2026_ha": 23936.66,
+  "gain_ha": 4098.13,
+  "loss_ha": 5274.5,
+  "net_change_ha": -1176.3700000000001,
+  "change_percent": -4.684301336796078,
+  "mean_ndvi_2020": 0.3181012312417835,
+  "mean_ndvi_2026": 0.3144385829220829,
+  "mean_ndvi_difference": -0.0036626483197006576
+}

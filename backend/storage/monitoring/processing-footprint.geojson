@@ -1,0 +1,39 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "scope": "central_pavlodar_pilot",
+        "not_city_boundary": true
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.985,
+              52.265
+            ],
+            [
+              76.985,
+              52.31
+            ],
+            [
+              76.925,
+              52.31
+            ],
+            [
+              76.925,
+              52.265
+            ],
+            [
+              76.985,
+              52.265
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

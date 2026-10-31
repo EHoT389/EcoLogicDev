@@ -1,0 +1,146 @@
+{
+  "S2A_43UFT_20200615_1_L2A": {
+    "red": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2A_43UFT_20200615_1_L2A-red-768639a9c8cde199.tif",
+    "green": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2A_43UFT_20200615_1_L2A-green-5bff8a833d8caaec.tif",
+    "scl": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2A_43UFT_20200615_1_L2A-scl-4560838ffd0caaa6.tif",
+    "blue": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2A_43UFT_20200615_1_L2A-blue-cb0b345c1e563102.tif"
+  },
+  "S2A_43UFU_20200622_1_L2A": {
+    "red": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2A_43UFU_20200622_1_L2A-red-29324127af774f7d.tif",
+    "green": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2A_43UFU_20200622_1_L2A-green-8cea993f3d292e4e.tif",
+    "scl": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2A_43UFU_20200622_1_L2A-scl-583669373bee9d96.tif",
+    "blue": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2A_43UFU_20200622_1_L2A-blue-c886497d4f48e489.tif"
+  },
+  "S2A_43UFU_20200625_1_L2A": {
+    "red": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2A_43UFU_20200625_1_L2A-red-d26c4c992b2ccf86.tif",
+    "green": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2A_43UFU_20200625_1_L2A-green-9f2187ac7c5ce5d0.tif",
+    "scl": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2A_43UFU_20200625_1_L2A-scl-eeab9f5898023e67.tif",
+    "blue": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2A_43UFU_20200625_1_L2A-blue-2f0c8fa3b196b1ac.tif"
+  },
+  "S2B_43UFT_20200630_1_L2A": {
+    "red": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2B_43UFT_20200630_1_L2A-red-2b732d9cdc06848f.tif",
+    "green": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2B_43UFT_20200630_1_L2A-green-89119e2f2f0940d9.tif",
+    "scl": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2B_43UFT_20200630_1_L2A-scl-184affbbb554389e.tif",
+    "blue": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2B_43UFT_20200630_1_L2A-blue-9582b538163067d0.tif"
+  },
+  "S2A_43UFU_20200715_1_L2A": {
+    "red": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2A_43UFU_20200715_1_L2A-red-8c5d937c9ffe19e2.tif",
+    "green": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2A_43UFU_20200715_1_L2A-green-54e341e11464ce34.tif",
+    "scl": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2A_43UFU_20200715_1_L2A-scl-10c358b9554625f6.tif",
+    "blue": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2A_43UFU_20200715_1_L2A-blue-a2846d795ed8bf42.tif"
+  },
+  "S2B_43UFU_20200717_1_L2A": {
+    "red": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2B_43UFU_20200717_1_L2A-red-d22b695a93930c5d.tif",
+    "green": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2B_43UFU_20200717_1_L2A-green-185bfcf24f59dae6.tif",
+    "scl": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2B_43UFU_20200717_1_L2A-scl-5dc7f2ae0d233681.tif",
+    "blue": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2B_43UFU_20200717_1_L2A-blue-b9e99f79f40c4855.tif"
+  },
+  "S2B_43UFT_20200720_1_L2A": {
+    "red": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2B_43UFT_20200720_1_L2A-red-25c3007b5bc7a97a.tif",
+    "green": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2B_43UFT_20200720_1_L2A-green-4599cdbc10666af9.tif",
+    "scl": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2B_43UFT_20200720_1_L2A-scl-745305cff6df77a9.tif",
+    "blue": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2B_43UFT_20200720_1_L2A-blue-f21276e4155c39bd.tif"
+  },
+  "S2A_43UFT_20200725_1_L2A": {
+    "red": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2A_43UFT_20200725_1_L2A-red-384f6cf34a56e5d6.tif",
+    "green": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2A_43UFT_20200725_1_L2A-green-d689d631a5b47c76.tif",
+    "scl": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2A_43UFT_20200725_1_L2A-scl-af0811acb919656c.tif",
+    "blue": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2A_43UFT_20200725_1_L2A-blue-4f7d1cb24bc97015.tif"
+  },
+  "S2A_43UFU_20200801_1_L2A": {
+    "red": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2A_43UFU_20200801_1_L2A-red-7d9012fd2d5e2ae7.tif",
+    "green": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2A_43UFU_20200801_1_L2A-green-0589483876d6d893.tif",
+    "scl": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2A_43UFU_20200801_1_L2A-scl-1ced55524820d548.tif",
+    "blue": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2A_43UFU_20200801_1_L2A-blue-38786d784e63d5ba.tif"
+  },
+  "S2A_43UFT_20200801_1_L2A": {
+    "red": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2A_43UFT_20200801_1_L2A-red-99b8221a537569eb.tif",
+    "green": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2A_43UFT_20200801_1_L2A-green-7d66f60b4930c74a.tif",
+    "scl": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2A_43UFT_20200801_1_L2A-scl-2a19ede4b4413298.tif",
+    "blue": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2A_43UFT_20200801_1_L2A-blue-d5bc3837c5e7c49b.tif"
+  },
+  "S2A_43UFU_20200831_1_L2A": {
+    "red": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2A_43UFU_20200831_1_L2A-red-d399ca6809f0e85f.tif",
+    "green": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2A_43UFU_20200831_1_L2A-green-7cd4f5f9685dfd09.tif",
+    "scl": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2A_43UFU_20200831_1_L2A-scl-7b5e3adafc98426c.tif",
+    "blue": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2A_43UFU_20200831_1_L2A-blue-5da83f55a4ab35db.tif"
+  },
+  "S2A_43UFT_20200831_1_L2A": {
+    "red": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2A_43UFT_20200831_1_L2A-red-9ae54f1c928e45d6.tif",
+    "green": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2A_43UFT_20200831_1_L2A-green-7f0a7ca97dd3df6d.tif",
+    "scl": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2A_43UFT_20200831_1_L2A-scl-b421a2e34b37e481.tif",
+    "blue": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2A_43UFT_20200831_1_L2A-blue-22bcc53d53742e11.tif"
+  },
+  "S2A_43UFU_20260603_1_L2A": {
+    "red": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2A_43UFU_20260603_1_L2A-red-e6536f44a43ada33.tif",
+    "green": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2A_43UFU_20260603_1_L2A-green-46f02ea1db5dab55.tif",
+    "scl": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2A_43UFU_20260603_1_L2A-scl-de014190af1ab4bb.tif",
+    "blue": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2A_43UFU_20260603_1_L2A-blue-c2bb6ef23238237c.tif"
+  },
+  "S2A_43UFT_20260603_1_L2A": {
+    "red": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2A_43UFT_20260603_1_L2A-red-76ed8139c09b3283.tif",
+    "green": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2A_43UFT_20260603_1_L2A-green-2431813261545fe3.tif",
+    "scl": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2A_43UFT_20260603_1_L2A-scl-b85eec174a07a622.tif",
+    "blue": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2A_43UFT_20260603_1_L2A-blue-2469ec359a70b371.tif"
+  },
+  "S2C_43UFU_20260621_0_L2A": {
+    "red": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2C_43UFU_20260621_0_L2A-red-35535bd2595a98d0.tif",
+    "green": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2C_43UFU_20260621_0_L2A-green-ca13f0f7663f959b.tif",
+    "scl": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2C_43UFU_20260621_0_L2A-scl-6c00c00bdc6d2dda.tif",
+    "blue": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2C_43UFU_20260621_0_L2A-blue-4581229b207e3e65.tif"
+  },
+  "S2C_43UFT_20260621_0_L2A": {
+    "red": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2C_43UFT_20260621_0_L2A-red-1d752eaa9772acc3.tif",
+    "green": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2C_43UFT_20260621_0_L2A-green-ad426892a6c76892.tif",
+    "scl": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2C_43UFT_20260621_0_L2A-scl-b5f1ec96591528fa.tif",
+    "blue": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2C_43UFT_20260621_0_L2A-blue-ed2141ad756a1569.tif"
+  },
+  "S2B_43UFU_20260709_0_L2A": {
+    "red": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2B_43UFU_20260709_0_L2A-red-46f54e960b08cc08.tif",
+    "green": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2B_43UFU_20260709_0_L2A-green-523b41c9924ee8b1.tif",
+    "scl": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2B_43UFU_20260709_0_L2A-scl-da2ee729aa8cf50f.tif",
+    "blue": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2B_43UFU_20260709_0_L2A-blue-d13fbfff33b4782c.tif"
+  },
+  "S2B_43UFT_20260709_0_L2A": {
+    "red": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2B_43UFT_20260709_0_L2A-red-fb9fb78096d3ea04.tif",
+    "green": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2B_43UFT_20260709_0_L2A-green-6dcbd79d040977f6.tif",
+    "scl": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2B_43UFT_20260709_0_L2A-scl-9b826c3d5f3aca73.tif",
+    "blue": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2B_43UFT_20260709_0_L2A-blue-5bac1c92e7eea7e7.tif"
+  },
+  "S2C_43UFU_20260714_0_L2A": {
+    "red": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2C_43UFU_20260714_0_L2A-red-3125b54b16cabd65.tif",
+    "green": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2C_43UFU_20260714_0_L2A-green-89ae7ee5f62a70e2.tif",
+    "scl": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2C_43UFU_20260714_0_L2A-scl-e24e0b9d9e620ece.tif",
+    "blue": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2C_43UFU_20260714_0_L2A-blue-e74987962a4fd1de.tif"
+  },
+  "S2C_43UFT_20260714_0_L2A": {
+    "red": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2C_43UFT_20260714_0_L2A-red-8904de2e98d15de8.tif",
+    "green": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2C_43UFT_20260714_0_L2A-green-1327a70bf4c11b0a.tif",
+    "scl": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2C_43UFT_20260714_0_L2A-scl-54483c643be0bf31.tif",
+    "blue": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2C_43UFT_20260714_0_L2A-blue-15011f452685e607.tif"
+  },
+  "S2C_43UFU_20260810_0_L2A": {
+    "red": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2C_43UFU_20260810_0_L2A-red-bb5e64a4cdf78bad.tif",
+    "green": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2C_43UFU_20260810_0_L2A-green-3e3e193cbc7a1be3.tif",
+    "scl": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2C_43UFU_20260810_0_L2A-scl-e7fcb9f09e2f0bd6.tif",
+    "blue": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2C_43UFU_20260810_0_L2A-blue-f17e9dc08509477c.tif"
+  },
+  "S2C_43UFT_20260810_0_L2A": {
+    "red": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2C_43UFT_20260810_0_L2A-red-a649de96f4be740c.tif",
+    "green": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2C_43UFT_20260810_0_L2A-green-41483b02da845254.tif",
+    "scl": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2C_43UFT_20260810_0_L2A-scl-ceceac6f187cdc1b.tif",
+    "blue": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2C_43UFT_20260810_0_L2A-blue-6f030eee15192198.tif"
+  },
+  "S2C_43UFU_20260813_0_L2A": {
+    "red": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2C_43UFU_20260813_0_L2A-red-1cf69e55ec77b4c9.tif",
+    "green": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2C_43UFU_20260813_0_L2A-green-9358af965e62403c.tif",
+    "scl": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2C_43UFU_20260813_0_L2A-scl-8bba14347606ba05.tif",
+    "blue": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2C_43UFU_20260813_0_L2A-blue-f8a3cac4e05e4125.tif"
+  },
+  "S2C_43UFT_20260813_0_L2A": {
+    "red": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2C_43UFT_20260813_0_L2A-red-8cf8227d5f3bbfdc.tif",
+    "green": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2C_43UFT_20260813_0_L2A-green-842e9e79974d600b.tif",
+    "scl": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2C_43UFT_20260813_0_L2A-scl-ce368b3a8965eb7e.tif",
+    "blue": "C:\\EcoLogicDev\\EcoLogicDev\\backend\\storage\\monitoring-city\\source-crops\\S2C_43UFT_20260813_0_L2A-blue-ca05ed578bd38bed.tif"
+  }
+}

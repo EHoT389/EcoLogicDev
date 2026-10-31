@@ -1,0 +1,21 @@
+{
+  "total_aoi_pixels": 6303776,
+  "total_pixels": 6303776,
+  "aoi_pixel_area_km2": 630.3776,
+  "common_valid_pixels": 6284713,
+  "common_fraction": 0.9969759395003883,
+  "missing_common_pixels": 19063,
+  "missing_common_fraction": 0.0030240604996116614,
+  "years": {
+    "2020": {
+      "valid_pixels": 6293096,
+      "valid_fraction": 0.9983057773626474,
+      "min_observations": 2
+    },
+    "2026": {
+      "valid_pixels": 6290577,
+      "valid_fraction": 0.9979061756001483,
+      "min_observations": 2
+    }
+  }
+}

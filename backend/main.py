@@ -163,7 +163,7 @@ def project_view(p,full=False):
  return result
 
 @app.get('/api/health')
-def health(): return {'status':'ok','version':VERSION,'ai_configured':bool(os.getenv('OPENROUTER_API_KEY')),'storage':'postgresql' if 'postgres' in os.getenv('DATABASE_URL','') else 'sqlite','email_delivery':False}
+def health(): return {'status':'ok','version':VERSION,'ai_configured':bool(router.get_api_key()),'storage':'postgresql' if 'postgres' in os.getenv('DATABASE_URL','') else 'sqlite','email_delivery':False}
 @app.get('/api/plants')
 def plants(db:DB=Depends(get_db)): return catalog(db)
 @app.get('/api/zones')
@@ -292,7 +292,8 @@ async def chat(payload:ChatInput,request:Request,u=Depends(session_user),db:DB=D
  from .decision import decision_response
  reason=None;retry_after=None;cloud_result=None
  try:
-  actor=throttle(request,db,'chat',12 if u else 4,3600)
+  has_cloud=bool(router.get_api_key(db)) or getattr(router.chat,'__qualname__','')!='AIModelRouter.chat'
+  actor=throttle(request,db,'chat',12 if u else 4,3600) if has_cloud else 'unconfigured'
   cloud_result=await router.chat(payload.message,context,db,u.id if u else actor,language=lang)
  except HTTPException as error:
   if error.status_code not in (429,502,503,504):raise
@@ -337,7 +338,7 @@ def ai_history(zone_id:str|None=None,u=Depends(required),db:DB=Depends(get_db)):
 @app.get('/api/admin')
 def admin_data(u=Depends(admin),db:DB=Depends(get_db)):
  events=db.scalars(select(Event).order_by(Event.created.desc()).limit(100)).all()
- return {'users':[public_user(x)|{'blocked':x.blocked=='yes'} for x in db.scalars(select(User)).all()],'rates':get_setting(db,'rates',RATES),'coefficients':get_setting(db,'coefficients',COEFFICIENTS),'weights':get_setting(db,'weights',WEIGHTS),'plants':catalog(db),'zones':get_setting(db,'zones',ZONES),'ai_enabled':get_setting(db,'ai_enabled',True),'ai_configured':bool(os.getenv('OPENROUTER_API_KEY')),'events':[{'kind':e.kind,'created':e.created,'data':json.loads(e.data)} for e in events],'counts':{'projects':db.scalar(select(func.count()).select_from(Project)),'users':db.scalar(select(func.count()).select_from(User))}}
+ return {'users':[public_user(x)|{'blocked':x.blocked=='yes'} for x in db.scalars(select(User)).all()],'rates':get_setting(db,'rates',RATES),'coefficients':get_setting(db,'coefficients',COEFFICIENTS),'weights':get_setting(db,'weights',WEIGHTS),'plants':catalog(db),'zones':get_setting(db,'zones',ZONES),'ai_enabled':get_setting(db,'ai_enabled',True),'ai_configured':bool(router.get_api_key(db)),'events':[{'kind':e.kind,'created':e.created,'data':json.loads(e.data)} for e in events],'counts':{'projects':db.scalar(select(func.count()).select_from(Project)),'users':db.scalar(select(func.count()).select_from(User))}}
 @app.put('/api/admin/users/{id}')
 def role(id:str,payload:RoleInput,u=Depends(admin),db:DB=Depends(get_db)):
  target=db.get(User,id)

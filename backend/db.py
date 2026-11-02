@@ -5,7 +5,7 @@ from sqlalchemy import create_engine, String, Text, Float, ForeignKey, select
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, sessionmaker
 from dotenv import load_dotenv
 load_dotenv(Path(__file__).resolve().parents[1]/'.env')
-DATABASE_URL=os.getenv('DATABASE_URL','sqlite:///./ecologic.db')
+DATABASE_URL=os.getenv('DATABASE_URL','').strip() or 'sqlite:///./ecologic.db'
 engine=create_engine(DATABASE_URL,connect_args={"check_same_thread":False} if DATABASE_URL.startswith('sqlite') else {},pool_pre_ping=True)
 SessionLocal=sessionmaker(engine,expire_on_commit=False)
 class Base(DeclarativeBase): pass

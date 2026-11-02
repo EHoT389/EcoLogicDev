@@ -4,7 +4,6 @@
 !.env.example
 .venv
 node_modules
-dist
 output
 *.db
 *.db-*

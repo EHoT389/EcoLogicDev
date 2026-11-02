@@ -3,7 +3,9 @@ from datetime import datetime,timezone
 from contextlib import asynccontextmanager
 from fastapi import FastAPI,Depends,HTTPException,Request,Response,UploadFile,File
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import StreamingResponse,JSONResponse
+from pathlib import Path
+from fastapi.responses import StreamingResponse,JSONResponse,FileResponse
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy import select,func,delete
 from sqlalchemy.orm import Session as DB
 from .db import User,Session,Project,Event,AIMessage,get_db,init_db,get_setting,put_setting,log,password_hash,password_matches
@@ -22,7 +24,10 @@ from .monitoring.api import router as monitoring_router
 async def lifespan(app): init_db();yield
 app=FastAPI(title='EcoLogicDev API',version='1.0.0',lifespan=lifespan,docs_url='/api/docs',openapi_url='/api/openapi.json')
 app.include_router(monitoring_router)
-origins=[o.strip() for o in os.getenv('ALLOWED_ORIGINS','http://127.0.0.1:5173,http://localhost:5173,http://127.0.0.1:4173,http://localhost:4173,http://127.0.0.1:5174,http://localhost:5174,http://127.0.0.1:5175,http://localhost:5175,http://127.0.0.1:3000,http://localhost:3000').split(',')]
+DEFAULT_ORIGINS='http://127.0.0.1:5173,http://localhost:5173,http://127.0.0.1:4173,http://localhost:4173,http://127.0.0.1:5174,http://localhost:5174,http://127.0.0.1:5175,http://localhost:5175,http://127.0.0.1:3000,http://localhost:3000'
+origins=[o.strip().rstrip('/') for o in (os.getenv('ALLOWED_ORIGINS','').strip() or DEFAULT_ORIGINS).split(',') if o.strip()]
+render_origin=os.getenv('RENDER_EXTERNAL_URL','').strip().rstrip('/')
+if render_origin and render_origin not in origins: origins.append(render_origin)
 secure=os.getenv('COOKIE_SECURE','false').lower()=='true'
 production=os.getenv('ENVIRONMENT')=='production'
 def is_allowed_origin(origin:str|None)->bool:
@@ -398,3 +403,17 @@ def publish_layer(id:str,u=Depends(admin),db:DB=Depends(get_db)):
 @app.delete('/api/admin/layers/{id}')
 def delete_layer(id:str,u=Depends(admin),db:DB=Depends(get_db)):
  layers=get_setting(db,'layers',[]);put_setting(db,'layers',[x for x in layers if x['id']!=id]);log(db,'layer_delete',u.id,{'id':id});db.commit();return {'ok':True}
+
+DIST_DIR=Path(__file__).resolve().parents[1]/'dist'
+if (DIST_DIR/'assets').is_dir():
+ app.mount('/assets',StaticFiles(directory=str(DIST_DIR/'assets')),name='assets')
+
+@app.get('/{full_path:path}',include_in_schema=False)
+def spa_frontend(full_path:str):
+ if full_path=='api' or full_path.startswith('api/'): raise HTTPException(404,'Маршрут не найден')
+ index_file=DIST_DIR/'index.html'
+ if not index_file.is_file(): raise HTTPException(404,'Клиентская сборка не найдена')
+ if full_path:
+  candidate=(DIST_DIR/full_path).resolve()
+  if candidate.is_file() and DIST_DIR.resolve() in candidate.parents: return FileResponse(candidate)
+ return FileResponse(index_file)

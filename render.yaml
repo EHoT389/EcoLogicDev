@@ -1,19 +1,19 @@
 services:
   - type: web
-    name: ecologicdev-api
+    name: ecologicdev
     runtime: docker
     plan: free
     healthCheckPath: /api/health
     envVars:
-      - key: DATABASE_URL
-        sync: false
-      - key: ALLOWED_ORIGINS
-        sync: false
-      - key: OPENROUTER_API_KEY
-        sync: false
       - key: ENVIRONMENT
         value: production
       - key: COOKIE_SECURE
         value: "true"
       - key: AI_DAILY_BUDGET
         value: "40"
+      - key: OPENROUTER_API_KEY
+        value: ""
+      - key: DATABASE_URL
+        value: ""
+      - key: ALLOWED_ORIGINS
+        value: ""
